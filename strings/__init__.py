@@ -64,7 +64,7 @@ keyboards: dict = {
         },
         'menu': {
             'title': 'Главное меню',
-            'callback_data': 'main_menu'
+            'callback_data': 'menu'
         }
     }
 }
@@ -99,11 +99,18 @@ commands: dict = {
                          '4. <b>Настройки</b> - Дополнительные функции.'
 }
 
+def category(category: str = None) -> str:
+    return f'Выбрана категория: {categories[category]}.'
+
+
 new_operation: dict = {
     'choose_operation_category': 'Пожалуйста, укажите категорию для операции.',
-    'choose_operation_value': 'Пожалуйста, укажите сумму операции.\nНапример: 100; 230.56.'
+    'operation_category_chosen': category,
+    'choose_operation_value': 'Пожалуйста, укажите сумму операции.'
 }
 
 other: dict = {
     'back_to_menu': 'Возвращаюсь в главное меню.'
 }
+
+

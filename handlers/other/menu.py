@@ -4,15 +4,18 @@ from aiogram.types import CallbackQuery
 from aiogram.filters import Text
 
 import config
+import handlers
 from keyboards import menu_kb
 from strings import other
 
 
 router = Router(name=__name__)
 
-
 @router.callback_query(Text('menu'))
 async def menu_callback_handler(callback_query: CallbackQuery, state: FSMContext, bot=config.bot):
+    # Remove callback delay.
+    await handlers.remove_callback_delay(callback_query=callback_query)
+
     # Remove inline keyboard from message.
     await bot.edit_message_reply_markup(chat_id=callback_query.message.chat.id,
                                         message_id=callback_query.message.message_id,
