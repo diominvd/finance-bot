@@ -21,14 +21,29 @@ dispatcher.include_routers(
     delete_last_operation.router
 )
 
+from handlers.profile import profile_command_handler
+dispatcher.include_routers(
+    profile_command_handler.router
+)
+
 from handlers.other import menu
 dispatcher.include_routers(
     menu.router
 )
 
 
+def date_formation() -> str:
+    import datetime
+    date: list = str(datetime.date.today()).split('-')
+    date: str = f'{date[2]}.{date[1]}.{date[0]}'
+    return date
+
+
 def fetch_user_id(obj: pydantic.main.ModelMetaclass) -> int:
     return int(obj.from_user.id)
+
+def fetch_user_username(obj: pydantic.main.ModelMetaclass) -> str:
+    return str(obj.from_user.username)
 
 
 async def remove_callback_delay(callback_query: aiogram.types.CallbackQuery) -> None:
