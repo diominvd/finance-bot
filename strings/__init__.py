@@ -103,3 +103,7 @@ new_operation: dict = {
     'choose_operation_category': 'Пожалуйста, укажите категорию для операции.',
     'choose_operation_value': 'Пожалуйста, укажите сумму операции.\nНапример: 100; 230.56.'
 }
+
+other: dict = {
+    'back_to_menu': 'Возвращаюсь в главное меню.'
+}
