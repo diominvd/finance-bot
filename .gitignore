@@ -1,7 +1,7 @@
 .idea
 __pycache__
-database/__pycache__
-database/database.db
+data/__pycache__
+data/database.db
 fsm/__pycache__
 handlers/__pycache__
 keyboards/__pycache__

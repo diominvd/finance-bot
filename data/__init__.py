@@ -1,7 +1,7 @@
 import sqlite3
 
 
-connection = sqlite3.connect('database/database.db')
+connection = sqlite3.connect('data/database.db')
 cursor = connection.cursor()
 
 # Database -> users.
