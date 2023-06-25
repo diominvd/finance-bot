@@ -11,7 +11,6 @@ import strings
 
 router = Router(name=__name__)
 
-
 @router.callback_query(NewOperationStates.get_operation_category, Text(startswith='category_'))
 async def operation_category_handler(callback_query: CallbackQuery, state: FSMContext, bot=bot) -> None:
     # Remove callback delay.

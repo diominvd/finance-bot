@@ -8,7 +8,6 @@ import handlers
 from keyboards import menu_kb
 from strings import other
 
-
 router = Router(name=__name__)
 
 @router.callback_query(Text('menu'))
