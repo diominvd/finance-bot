@@ -11,12 +11,6 @@ import strings
 
 router = Router(name=__name__)
 
-def date_formation() -> str:
-    import datetime
-    date: list = str(datetime.date.today()).split('-')
-    date: str = f'{date[2]}.{date[1]}.{date[0]}'
-    return date
-
 @router.message(Text('Добавить операцию'))
 async def add_operation_command_handler(message: Message, state: FSMContext) -> None:
     # Remove menu reply keyboard.
@@ -28,7 +22,7 @@ async def add_operation_command_handler(message: Message, state: FSMContext) -> 
     # Update operation date int bot storage.
     storage_functions.update_operation_data_in_bot_storage(user_id=handlers.fetch_user_id(obj=message),
                                                            field='date',
-                                                           value=date_formation())
+                                                           value=handlers.date_formation())
 
     await message.answer(text=strings.new_operation['choose_operation_category'],
                          reply_markup=categories_kb)

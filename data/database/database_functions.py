@@ -67,3 +67,12 @@ def delete_last_operation_from_database(user_id: int) -> list:
     last_operations: list = select_last_operations_from_database(user_id=user_id)
 
     return last_operations
+
+
+def select_all_operations_from_database(user_id: int) -> list and str:
+    # Fetch all operations from database/operations.
+    cursor.execute(f'SELECT category, value, date FROM operations WHERE user_id = ?',
+                   (user_id, ))
+    all_operations: list = cursor.fetchall()
+
+    return all_operations
