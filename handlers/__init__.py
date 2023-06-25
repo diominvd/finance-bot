@@ -15,6 +15,12 @@ dispatcher.include_routers(
     operation_value.router
 )
 
+from handlers.last_operations import last_operations_command, delete_last_operation
+dispatcher.include_routers(
+    last_operations_command.router,
+    delete_last_operation.router
+)
+
 from handlers.other import menu
 dispatcher.include_routers(
     menu.router

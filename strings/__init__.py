@@ -68,6 +68,16 @@ keyboards: dict = {
             'title': 'Главное меню',
             'callback_data': 'menu'
         }
+    },
+    'last_operations_keyboard': {
+        'delete_last_operation': {
+            'title': 'Удалить последнюю операцию',
+            'callback_data': 'delete_last'
+        },
+        'menu': {
+            'title': 'Главное меню',
+            'callback_data': 'menu'
+        }
     }
 }
 
@@ -102,11 +112,11 @@ commands: dict = {
 }
 
 def output_category(category: str = None) -> str:
-    return f'Выбрана категория: {categories[category]}.'
+    return f'Выбрана категория: {categories[category]}'
 
-def operation_complete(user_id: int = None) -> str:
+def operation_complete_output(user_id: int = None) -> str:
     from config import bot_storage
-    return f'[+] Операция успешно добавлена.\n' \
+    return f'📌 Операция успешно добавлена.\n' \
            f'Категория: {categories[bot_storage[user_id]["category"]]}\n' \
            f'Сумма: {bot_storage[user_id]["value"]} ₽\n' \
            f'Дата создания: {bot_storage[user_id]["date"]}\n\n'
@@ -117,7 +127,24 @@ new_operation: dict = {
     'operation_category_chosen': output_category,
     'choose_operation_value': 'Пожалуйста, укажите сумму операции.',
     'incorrect_value': 'Неверное значение суммы операции. Повторите попытку.',
-    'operation_complete': operation_complete
+    'operation_complete': operation_complete_output
+}
+
+def output_last_operations(operations: list) -> str:
+    message_text = f'Последние операции:\n'
+    for operation in operations:
+        operation_id: int = operation[0]
+        user_id: int = operation[1]
+        category: str = operation[2]
+        value: float = operation[3]
+        date: str = operation[4]
+        message_text += f'{value} ₽ | {categories[category]} | {date}\n'
+    return message_text
+
+
+last_operations: dict = {
+    'output_last_operations': output_last_operations,
+    'last_operations_empty': 'Список последних операций пуст.'
 }
 
 other: dict = {

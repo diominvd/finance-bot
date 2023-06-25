@@ -3,12 +3,13 @@ from aiogram.types import Message, ReplyKeyboardRemove
 import config
 
 from keyboards.reply import menu_keyboard
-from keyboards.inline import categories_keyboard
+from keyboards.inline import categories_keyboard, last_operations_keyboard
 
 
 menu_kb = menu_keyboard.create_menu_keyboard()
 
 categories_kb = categories_keyboard.create_categories_keyboard()
+last_operations_kb = last_operations_keyboard.create_last_operations_keyboard()
 
 
 async def delete_reply_keyboard(message: Message, bot=config.bot) -> None:
