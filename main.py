@@ -2,6 +2,8 @@ import asyncio
 import logging
 
 from config import bot, dispatcher
+import handlers
+import data
 
 
 async def main():
