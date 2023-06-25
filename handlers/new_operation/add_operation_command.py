@@ -3,6 +3,7 @@ from aiogram.types import Message
 from aiogram.filters import Text
 from aiogram.fsm.context import FSMContext
 
+import handlers
 from data.storage import storage_functions
 from keyboards import delete_reply_keyboard, categories_kb
 from states import NewOperationStates
@@ -22,10 +23,10 @@ async def add_operation_command_handler(message: Message, state: FSMContext) -> 
     await delete_reply_keyboard(message=message)
 
     # Create new operation in bot storage.
-    storage_functions.insert_operation_into_bot_storage(obj=message)
+    storage_functions.insert_operation_into_bot_storage(user_id=handlers.fetch_user_id(obj=message))
 
     # Update operation date int bot storage.
-    storage_functions.update_operation_data_in_bot_storage(obj=message,
+    storage_functions.update_operation_data_in_bot_storage(user_id=handlers.fetch_user_id(obj=message),
                                                            field='date',
                                                            value=date_formation())
 

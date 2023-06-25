@@ -21,7 +21,7 @@ async def operation_category_handler(callback_query: CallbackQuery, state: FSMCo
     operation_category: str = callback_query.data.split('_')[1]
 
     # Update operation data in bot storage.
-    storage_functions.update_operation_data_in_bot_storage(obj=callback_query,
+    storage_functions.update_operation_data_in_bot_storage(user_id=handlers.fetch_user_id(obj=callback_query),
                                                            field='category',
                                                            value=operation_category)
 
