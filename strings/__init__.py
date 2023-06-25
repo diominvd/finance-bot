@@ -241,6 +241,10 @@ profile: dict = {
     'output_statistic': output_statistic
 }
 
+settings: dict = {
+
+}
+
 other: dict = {
     'back_to_menu': 'Возвращаюсь в главное меню.'
 }
