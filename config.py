@@ -7,4 +7,4 @@ bot: aiogram.Bot = aiogram.Bot(token=os.environ['API_TOKEN'], parse_mode='HTML')
 dispatcher: aiogram.Dispatcher = aiogram.Dispatcher()
 
 # BOT_ROM is necessary to monitor active operations that are in the process of being created.
-BOT_STORAGE: dict = {}
+bot_storage: dict = {}

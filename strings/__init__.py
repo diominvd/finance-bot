@@ -1,3 +1,5 @@
+import pydantic.main
+
 keyboards: dict = {
     'menu_keyboard': {
         'add_operation': 'Добавить операцию',
@@ -99,14 +101,23 @@ commands: dict = {
                          '4. <b>Настройки</b> - Дополнительные функции.'
 }
 
-def category(category: str = None) -> str:
+def output_category(category: str = None) -> str:
     return f'Выбрана категория: {categories[category]}.'
+
+def operation_complete(user_id: int = None) -> str:
+    from config import bot_storage
+    return f'[+] Операция успешно добавлена.\n' \
+           f'Категория: {categories[bot_storage[user_id]["category"]]}\n' \
+           f'Сумма: {bot_storage[user_id]["value"]} ₽\n' \
+           f'Дата создания: {bot_storage[user_id]["date"]}\n\n'
 
 
 new_operation: dict = {
     'choose_operation_category': 'Пожалуйста, укажите категорию для операции.',
-    'operation_category_chosen': category,
-    'choose_operation_value': 'Пожалуйста, укажите сумму операции.'
+    'operation_category_chosen': output_category,
+    'choose_operation_value': 'Пожалуйста, укажите сумму операции.',
+    'incorrect_value': 'Неверное значение суммы операции. Повторите попытку.',
+    'operation_complete': operation_complete
 }
 
 other: dict = {

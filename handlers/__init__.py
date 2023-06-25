@@ -8,10 +8,11 @@ dispatcher.include_routers(
     help.router
 )
 
-from handlers.new_operation import add_operation_command, operation_category
+from handlers.new_operation import add_operation_command, operation_category, operation_value
 dispatcher.include_routers(
     add_operation_command.router,
-    operation_category.router
+    operation_category.router,
+    operation_value.router
 )
 
 from handlers.other import menu
