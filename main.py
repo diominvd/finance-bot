@@ -3,6 +3,7 @@ import logging
 
 from config import bot, dispatcher
 import handlers
+import database
 
 
 async def main():

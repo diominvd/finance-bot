@@ -10,6 +10,6 @@ router = Router(name=__name__)
 
 
 @router.message(Command('help'))
-async def start_command_handler(message: Message):
+async def start_command_handler(message: Message) -> None:
     await message.answer(text=commands['help_command_text'],
                          reply_markup=menu_kb)
