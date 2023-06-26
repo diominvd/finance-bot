@@ -29,6 +29,15 @@ async def operation_value_handler(message: Message, state: FSMContext, bot=confi
         # Insert operation data into database.
         database_functions.insert_operation_into_database(user_id=handlers.fetch_user_id(obj=message))
 
+        # Edit message with value query.
+        await bot.edit_message_text(text=strings.new_operation['operation_value_chosen'](value=message.text),
+                                    chat_id=message.chat.id,
+                                    message_id=message.message_id - 1)
+
+        # Delete message from user with value.
+        await bot.delete_message(chat_id=message.chat.id,
+                                 message_id=message.message_id)
+
         # Send final message.
         await bot.send_message(chat_id=message.chat.id,
                                text=strings.new_operation['operation_complete'](user_id=handlers.fetch_user_id(obj=message)),

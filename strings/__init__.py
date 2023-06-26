@@ -114,6 +114,9 @@ commands: dict = {
 def output_category(category: str = None) -> str:
     return f'Выбрана категория: {categories[category]}'
 
+def output_value(value: str = None) -> str:
+    return f'Сумма операции: {float(value)} ₽'
+
 def operation_complete_output(user_id: int = None) -> str:
     from config import bot_storage
     return f'📌 Операция успешно добавлена.\n' \
@@ -126,6 +129,7 @@ new_operation: dict = {
     'choose_operation_category': 'Пожалуйста, укажите категорию для операции.',
     'operation_category_chosen': output_category,
     'choose_operation_value': 'Пожалуйста, укажите сумму операции.',
+    'operation_value_chosen': output_value,
     'incorrect_value': 'Неверное значение суммы операции. Повторите попытку.',
     'operation_complete': operation_complete_output
 }
