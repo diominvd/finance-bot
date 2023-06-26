@@ -78,6 +78,10 @@ keyboards: dict = {
             'title': 'Главное меню',
             'callback_data': 'menu'
         }
+    },
+    'settings_keyboard': {
+        'clear_all_operations': 'Очистить список операций',
+        'menu': 'Главное меню'
     }
 }
 
@@ -248,7 +252,8 @@ profile: dict = {
 }
 
 settings: dict = {
-
+    'settings_command_message': 'Открываю настройки.',
+    'all_operations_deleted': 'Список операций очищен.'
 }
 
 other: dict = {

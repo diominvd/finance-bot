@@ -26,9 +26,10 @@ dispatcher.include_routers(
     profile_command_handler.router
 )
 
-from handlers.settings import settings_command_handler
+from handlers.settings import settings_command_handler, delete_all_operations_handler
 dispatcher.include_routers(
-    settings_command_handler.router
+    settings_command_handler.router,
+    delete_all_operations_handler.router
 )
 
 from handlers.other import menu

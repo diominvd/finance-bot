@@ -8,3 +8,7 @@ class NewOperationStates(StatesGroup):
 
 class LastOperationsStates(StatesGroup):
     get_callback = State()
+
+
+class SettingsStates(StatesGroup):
+    get_option = State()

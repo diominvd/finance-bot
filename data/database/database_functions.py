@@ -76,3 +76,15 @@ def select_all_operations_from_database(user_id: int) -> list and str:
     all_operations: list = cursor.fetchall()
 
     return all_operations
+
+
+def delete_all_user_operations_from_database(user_id: int) -> None:
+    # Delete all operations from database/operations.
+    cursor.execute(f'DELETE FROM operations WHERE user_id = ?', (user_id, ))
+    connection.commit()
+
+    # Set default values = 0 in database/users.
+    cursor.execute(f'UPDATE users SET products = 0, cafes = 0, auto = 0, transport = 0, home = 0, entertainment = 0, '
+                   f'sport = 0, health = 0, education = 0, gifts = 0, beauty = 0, clothes = 0, technic = 0, subscriptions = 0, total = 0 '
+                   f'WHERE user_id = ?', (user_id, ))
+    connection.commit()
