@@ -78,6 +78,10 @@ keyboards: dict = {
             'title': 'Главное меню',
             'callback_data': 'menu'
         }
+    },
+    'settings_keyboard': {
+        'clear_all_operations': 'Очистить список операций',
+        'menu': 'Главное меню'
     }
 }
 
@@ -105,14 +109,19 @@ commands: dict = {
                           'просматривать последние операции и формировать отчёт за определённый период.\n\n'
                           'Для получения дополнительной информации напишите команду "/help."',
     'help_command_text': 'Список основных функций бота:\n\n'
-                         '1. <b>Добавить операцию</b> - Позволяет добавить операцию с последующим выбором категории и суммы.\n\n'
-                         '2. <b>Последние операции</b> - Отображает последние 5 операций.\n\n'
-                         '3. <b>Профиль</b> - Отображает вашу статистику по всем категориям.\n\n'
+                         '1. <b>Добавить операцию</b> - Позволяет добавить операцию с последующим выбором категории и суммы. '
+                         'Операция сохраняется в базу данных.\n\n'
+                         '2. <b>Последние операции</b> - Отображает последние 5 операций с возможностью '
+                         'удалить последнюю добавленную операцию.\n\n'
+                         '3. <b>Профиль</b> - Отображает вашу статистику по всем категориям за отчётный период.\n\n'
                          '4. <b>Настройки</b> - Дополнительные функции.'
 }
 
 def output_category(category: str = None) -> str:
     return f'Выбрана категория: {categories[category]}'
+
+def output_value(value: str = None) -> str:
+    return f'Сумма операции: {float(value)} ₽'
 
 def operation_complete_output(user_id: int = None) -> str:
     from config import bot_storage
@@ -126,6 +135,7 @@ new_operation: dict = {
     'choose_operation_category': 'Пожалуйста, укажите категорию для операции.',
     'operation_category_chosen': output_category,
     'choose_operation_value': 'Пожалуйста, укажите сумму операции.',
+    'operation_value_chosen': output_value,
     'incorrect_value': 'Неверное значение суммы операции. Повторите попытку.',
     'operation_complete': operation_complete_output
 }
@@ -239,6 +249,11 @@ def output_statistic(username: str, operations_list: list, current_date: str) ->
 
 profile: dict = {
     'output_statistic': output_statistic
+}
+
+settings: dict = {
+    'settings_command_message': 'Открываю настройки.',
+    'all_operations_deleted': 'Список операций очищен.'
 }
 
 other: dict = {
