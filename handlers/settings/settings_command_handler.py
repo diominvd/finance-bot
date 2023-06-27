@@ -11,7 +11,7 @@ import strings
 router = Router(name=__name__)
 
 @router.message(Text('Настройки'))
-async def settings_command_handler(message: Message, state: FSMContext, bot=config.bot):
+async def settings_command_handler(message: Message, state: FSMContext):
     await message.answer(text=strings.settings['settings_command_message'],
                          reply_markup=settings_kb)
 

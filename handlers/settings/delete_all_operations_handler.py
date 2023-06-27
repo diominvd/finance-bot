@@ -1,9 +1,7 @@
 from aiogram import Router
 from aiogram.types import Message
 from aiogram.filters import Text
-from aiogram.fsm.context import FSMContext
 
-import config
 import handlers
 from data.database import database_functions
 from keyboards import settings_kb

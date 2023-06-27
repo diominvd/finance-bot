@@ -1,18 +1,18 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-import strings
+from strings import keyboards
 
 
 def create_menu_keyboard() -> ReplyKeyboardMarkup:
     keyboard_buttons = [
         [
-            KeyboardButton(text=strings.keyboards['menu_keyboard']['add_operation'])
+            KeyboardButton(text=keyboards['menu_keyboard']['add_operation'])
         ],
         [
-            KeyboardButton(text=strings.keyboards['menu_keyboard']['last_operations'])
+            KeyboardButton(text=keyboards['menu_keyboard']['last_operations'])
         ],
         [
-            KeyboardButton(text=strings.keyboards['menu_keyboard']['profile']),
-            KeyboardButton(text=strings.keyboards['menu_keyboard']['settings'])
+            KeyboardButton(text=keyboards['menu_keyboard']['profile']),
+            KeyboardButton(text=keyboards['menu_keyboard']['settings'])
         ]
     ]
     menu_keyboard = ReplyKeyboardMarkup(resize_keyboard=True,

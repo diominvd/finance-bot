@@ -22,7 +22,7 @@ async def add_operation_command_handler(message: Message, state: FSMContext) -> 
     # Update operation date int bot storage.
     storage_functions.update_operation_data_in_bot_storage(user_id=handlers.fetch_user_id(obj=message),
                                                            field='date',
-                                                           value=handlers.date_formation())
+                                                           value=handlers.current_date_formation())
 
     await message.answer(text=strings.new_operation['choose_operation_category'],
                          reply_markup=categories_kb)

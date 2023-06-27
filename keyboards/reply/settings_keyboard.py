@@ -1,14 +1,14 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-import strings
+from strings import keyboards
 
 
 def create_settings_keyboard() -> ReplyKeyboardMarkup:
     keyboard_buttons = [
         [
-            KeyboardButton(text=strings.keyboards['settings_keyboard']['clear_all_operations'])
+            KeyboardButton(text=keyboards['settings_keyboard']['clear_all_operations'])
         ],
         [
-            KeyboardButton(text=strings.keyboards['settings_keyboard']['menu'])
+            KeyboardButton(text=keyboards['settings_keyboard']['menu'])
         ]
     ]
     settings_keyboard = ReplyKeyboardMarkup(resize_keyboard=True,
