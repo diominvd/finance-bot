@@ -114,7 +114,9 @@ commands: dict = {
                          '2. <b>Последние операции</b> - Отображает последние 5 операций с возможностью '
                          'удалить последнюю добавленную операцию.\n\n'
                          '3. <b>Профиль</b> - Отображает вашу статистику по всем категориям за отчётный период.\n\n'
-                         '4. <b>Настройки</b> - Дополнительные функции.'
+                         '4. <b>Настройки</b> - Дополнительные функции.\n'
+                         '4.1 <b>Очистить историю операций</b> - Удаляет всю историю операций. При этом сбрасывается отчётный период. '
+                         'Чтобы начать новый период добавьте новую операцию.'
 }
 
 def output_category(category: str = None) -> str:
@@ -158,93 +160,98 @@ last_operations: dict = {
 }
 
 def output_statistic(username: str, operations_list: list, current_date: str) -> str:
-    first_date: str = operations_list[0][2]
-
-    categories_values: dict = {
-        'products': {
-                'title': 'Продукты',
-                'value': 0
-        },
-        'cafes': {
-                'title': 'Кафе',
-                'value': 0
-        },
-        'auto': {
-                'title': 'Автомобиль',
-                'value': 0
-        },
-        'transport': {
-                'title': 'Транспорт',
-                'value': 0
-        },
-        'home': {
-                'title': 'Дом',
-                'value': 0
-        },
-        'entertainment': {
-                'title': 'Развлечения',
-                'value': 0
-        },
-        'sport': {
-                'title': 'Спорт',
-                'value': 0
-        },
-        'health': {
-                'title': 'Здоровье',
-                'value': 0
-        },
-        'education': {
-                'title': 'Образование',
-                'value': 0
-        },
-        'gifts': {
-                'title': 'Подарки',
-                'value': 0
-        },
-        'beauty': {
-                'title': 'Красота',
-                'value': 0
-        },
-        'clothes': {
-                'title': 'Одежда',
-                'value': 0
-        },
-        'technic': {
-                'title': 'Техника',
-                'value': 0
-        },
-        'subscriptions': {
-                'title': 'Подписки',
-                'value': 0
+    try:
+        first_date: str = operations_list[0][2]
+    except:
+        reporting_period: str = 'Отсутствует.'
+    else:
+        reporting_period: str = f'{first_date} - {current_date}'
+    finally:
+        categories_values: dict = {
+            'products': {
+                    'title': 'Продукты',
+                    'value': 0
+            },
+            'cafes': {
+                    'title': 'Кафе',
+                    'value': 0
+            },
+            'auto': {
+                    'title': 'Автомобиль',
+                    'value': 0
+            },
+            'transport': {
+                    'title': 'Транспорт',
+                    'value': 0
+            },
+            'home': {
+                    'title': 'Дом',
+                    'value': 0
+            },
+            'entertainment': {
+                    'title': 'Развлечения',
+                    'value': 0
+            },
+            'sport': {
+                    'title': 'Спорт',
+                    'value': 0
+            },
+            'health': {
+                    'title': 'Здоровье',
+                    'value': 0
+            },
+            'education': {
+                    'title': 'Образование',
+                    'value': 0
+            },
+            'gifts': {
+                    'title': 'Подарки',
+                    'value': 0
+            },
+            'beauty': {
+                    'title': 'Красота',
+                    'value': 0
+            },
+            'clothes': {
+                    'title': 'Одежда',
+                    'value': 0
+            },
+            'technic': {
+                    'title': 'Техника',
+                    'value': 0
+            },
+            'subscriptions': {
+                    'title': 'Подписки',
+                    'value': 0
+            }
         }
-    }
-    total_sum: float = 0
+        total_sum: float = 0
 
-    # Summ all values in categories.
-    for operation in operations_list:
-        categories_values[operation[0]]['value'] += operation[1]
-        total_sum += operation[1]
+        # Summ all values in categories.
+        for operation in operations_list:
+            categories_values[operation[0]]['value'] += operation[1]
+            total_sum += operation[1]
 
-    message_text = f'Пользователь: @{username}\n' \
-                   f'Ваши расходы по категориям.\n' \
-                   f'📅 Период: {first_date} - {current_date}\n\n' \
-                   f'{categories_values["products"]["title"]}: {categories_values["products"]["value"]} ₽\n' \
-                   f'{categories_values["cafes"]["title"]}: {categories_values["cafes"]["value"]} ₽\n' \
-                   f'{categories_values["auto"]["title"]}: {categories_values["auto"]["value"]} ₽\n' \
-                   f'{categories_values["transport"]["title"]}: {categories_values["transport"]["value"]} ₽\n' \
-                   f'{categories_values["home"]["title"]}: {categories_values["home"]["value"]} ₽\n' \
-                   f'{categories_values["entertainment"]["title"]}: {categories_values["entertainment"]["value"]} ₽\n' \
-                   f'{categories_values["sport"]["title"]}: {categories_values["sport"]["value"]} ₽\n' \
-                   f'{categories_values["health"]["title"]}: {categories_values["health"]["value"]} ₽\n' \
-                   f'{categories_values["education"]["title"]}: {categories_values["education"]["value"]} ₽\n' \
-                   f'{categories_values["gifts"]["title"]}: {categories_values["gifts"]["value"]} ₽\n' \
-                   f'{categories_values["beauty"]["title"]}: {categories_values["beauty"]["value"]} ₽\n' \
-                   f'{categories_values["clothes"]["title"]}: {categories_values["clothes"]["value"]} ₽\n' \
-                   f'{categories_values["technic"]["title"]}: {categories_values["technic"]["value"]} ₽\n' \
-                   f'{categories_values["subscriptions"]["title"]}: {categories_values["subscriptions"]["value"]} ₽\n\n' \
-                   f'Всего потрачено: {total_sum} ₽'
+        message_text = f'Пользователь: @{username}\n' \
+                       f'Ваши расходы по категориям.\n' \
+                       f'📅 Период: {reporting_period}\n\n' \
+                       f'{categories_values["products"]["title"]}: {categories_values["products"]["value"]} ₽\n' \
+                       f'{categories_values["cafes"]["title"]}: {categories_values["cafes"]["value"]} ₽\n' \
+                       f'{categories_values["auto"]["title"]}: {categories_values["auto"]["value"]} ₽\n' \
+                       f'{categories_values["transport"]["title"]}: {categories_values["transport"]["value"]} ₽\n' \
+                       f'{categories_values["home"]["title"]}: {categories_values["home"]["value"]} ₽\n' \
+                       f'{categories_values["entertainment"]["title"]}: {categories_values["entertainment"]["value"]} ₽\n' \
+                       f'{categories_values["sport"]["title"]}: {categories_values["sport"]["value"]} ₽\n' \
+                       f'{categories_values["health"]["title"]}: {categories_values["health"]["value"]} ₽\n' \
+                       f'{categories_values["education"]["title"]}: {categories_values["education"]["value"]} ₽\n' \
+                       f'{categories_values["gifts"]["title"]}: {categories_values["gifts"]["value"]} ₽\n' \
+                       f'{categories_values["beauty"]["title"]}: {categories_values["beauty"]["value"]} ₽\n' \
+                       f'{categories_values["clothes"]["title"]}: {categories_values["clothes"]["value"]} ₽\n' \
+                       f'{categories_values["technic"]["title"]}: {categories_values["technic"]["value"]} ₽\n' \
+                       f'{categories_values["subscriptions"]["title"]}: {categories_values["subscriptions"]["value"]} ₽\n\n' \
+                       f'Всего потрачено: {total_sum} ₽'
 
-    return message_text
+        return message_text
 
 
 profile: dict = {

@@ -12,9 +12,9 @@ router = Router(name=__name__)
 @router.message(Text('Профиль'))
 async def profile_command_handler(message: Message) -> None:
     # Fetch all operations and first operation date from database.
-    all_operations = database_functions.select_all_operations_from_database(user_id=handlers.fetch_user_id(obj=message))
+    all_operations: list = database_functions.select_all_operations_from_database(user_id=handlers.fetch_user_id(obj=message))
 
     await message.answer(text=strings.profile['output_statistic'](username=handlers.fetch_user_username(obj=message),
                                                                   operations_list=all_operations,
-                                                                  current_date=handlers.date_formation()),
+                                                                  current_date=handlers.current_date_formation()),
                          reply_markup=menu_kb)

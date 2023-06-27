@@ -38,7 +38,7 @@ dispatcher.include_routers(
 )
 
 
-def date_formation() -> str:
+def current_date_formation() -> str:
     import datetime
     date: list = str(datetime.date.today()).split('-')
     date: str = f'{date[2]}.{date[1]}.{date[0]}'
