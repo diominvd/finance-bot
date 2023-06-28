@@ -11,7 +11,10 @@ def create_menu_keyboard() -> ReplyKeyboardMarkup:
             KeyboardButton(text=keyboards['menu_keyboard']['last_operations'])
         ],
         [
-            KeyboardButton(text=keyboards['menu_keyboard']['profile']),
+            KeyboardButton(text=keyboards['menu_keyboard']['market']),
+            KeyboardButton(text=keyboards['menu_keyboard']['profile'])
+        ],
+        [
             KeyboardButton(text=keyboards['menu_keyboard']['settings'])
         ]
     ]
