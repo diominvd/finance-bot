@@ -4,6 +4,7 @@ keyboards: dict = {
     'menu_keyboard': {
         'add_operation': 'Добавить операцию',
         'last_operations': 'Последние операции',
+        'market': 'Биржа',
         'profile': 'Профиль',
         'settings': 'Настройки'
     },

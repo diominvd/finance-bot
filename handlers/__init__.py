@@ -21,6 +21,11 @@ dispatcher.include_routers(
     delete_last_operation.router
 )
 
+from handlers.market import market_command
+dispatcher.include_routers(
+    market_command.router
+)
+
 from handlers.profile import profile_command_handler
 dispatcher.include_routers(
     profile_command_handler.router
