@@ -33,5 +33,5 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS operations(
 
 cursor.execute('''CREATE TABLE IF NOT EXISTS market(
     user_id INTEGER UNIQUE,
-    quotes TEXT,
+    tickers TEXT,
     FOREIGN KEY (user_id) REFERENCES users (user_id))''')

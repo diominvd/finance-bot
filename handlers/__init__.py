@@ -22,8 +22,12 @@ dispatcher.include_routers(
 )
 
 from handlers.market import market_command
+from handlers.market.add_ticker import add_ticker_command, fetch_new_ticker, back_to_market
 dispatcher.include_routers(
-    market_command.router
+    market_command.router,
+    add_ticker_command.router,
+    fetch_new_ticker.router,
+    back_to_market.router
 )
 
 from handlers.profile import profile_command_handler

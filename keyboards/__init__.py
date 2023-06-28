@@ -3,12 +3,13 @@ from aiogram.types import Message, ReplyKeyboardRemove
 
 import config
 
-from keyboards.reply import menu_keyboard, settings_keyboard, market_keyboard
+from keyboards.reply import menu_keyboard, settings_keyboard, market_keyboard, add_ticker_keyboard
 from keyboards.inline import categories_keyboard, last_operations_keyboard
 
 
 menu_kb: ReplyKeyboardMarkup = menu_keyboard.create_menu_keyboard()
 market_kb: ReplyKeyboardMarkup = market_keyboard.create_market_keyboard()
+add_ticker_kb: ReplyKeyboardMarkup = add_ticker_keyboard.create_add_ticker_keyboard()
 settings_kb: ReplyKeyboardMarkup = settings_keyboard.create_settings_keyboard()
 
 categories_kb: InlineKeyboardMarkup = categories_keyboard.create_categories_keyboard()

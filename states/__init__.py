@@ -12,6 +12,7 @@ class LastOperationsStates(StatesGroup):
 
 class MarketStates(StatesGroup):
     get_mode = State()
+    get_new_ticker = State()
 
 
 class SettingsStates(StatesGroup):
