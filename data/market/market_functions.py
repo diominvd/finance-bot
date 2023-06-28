@@ -7,7 +7,7 @@ import requests
 
 def insert_new_user_into_database_market(user_id: int) -> None:
     try:
-        cursor.execute('INSERT INTO market (user_id) VALUES (?)', (user_id, ))
+        cursor.execute('INSERT INTO market VALUES (?, ?)', (user_id, ''))
     except:
         print(f'> insert user {user_id} into database/market: error.')
     else:
@@ -49,11 +49,6 @@ def add_new_ticker_for_user_in_database_market(user_id: int, new_ticker_name: st
     if check_new_ticker_existence(ticker_name=new_ticker_name):
         if not check_new_ticker_in_database_market_user_tickers(ticker_name=new_ticker_name, user_id=user_id):
             user_tickers: list = select_all_user_tickers_from_database_market(user_id=user_id)
-
-            if user_tickers[0] == '':
-                user_tickers.pop(0)
-            else:
-                pass
 
             # Formatting string with all tickers
             user_tickers_string: str = f''

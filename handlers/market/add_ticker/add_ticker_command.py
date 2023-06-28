@@ -15,7 +15,7 @@ router = Router(name=__name__)
 async def add_ticker_command_handler(message: Message, state: FSMContext):
     # Fetch user tickers from database and check limit.
     user_tickers: list = market_functions.select_all_user_tickers_from_database_market(user_id=handlers.fetch_user_id(obj=message))
-    print(len(user_tickers))
+
     if market_functions.check_user_tickers_limit(tickers_list=user_tickers):
         await message.answer(text=strings.market['max_tickers'])
     else:
