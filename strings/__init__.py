@@ -1,9 +1,12 @@
 import pydantic.main
 
+import data.market.market_functions
+
 keyboards: dict = {
     'menu_keyboard': {
         'add_operation': 'Добавить операцию',
         'last_operations': 'Последние операции',
+        'market': 'Биржа',
         'profile': 'Профиль',
         'settings': 'Настройки'
     },
@@ -82,6 +85,17 @@ keyboards: dict = {
     'settings_keyboard': {
         'clear_all_operations': 'Очистить список операций',
         'menu': 'Главное меню'
+    },
+    'market_keyboard': {
+        'add_ticker': 'Добавить тикер',
+        'my_tickers': 'Мои тикеры',
+        'menu': 'Главное меню'
+    },
+    'add_ticker_keyboard': {
+        'cancel': 'Отмена'
+    },
+    'my_tickers_keyboard': {
+        'cancel': 'Отмена'
     }
 }
 
@@ -119,11 +133,14 @@ commands: dict = {
                          'Чтобы начать новый период добавьте новую операцию.'
 }
 
+
 def output_category(category: str = None) -> str:
     return f'Выбрана категория: {categories[category]}'
 
+
 def output_value(value: str = None) -> str:
     return f'Сумма операции: {float(value)} ₽'
+
 
 def operation_complete_output(user_id: int = None) -> str:
     from config import bot_storage
@@ -142,6 +159,7 @@ new_operation: dict = {
     'operation_complete': operation_complete_output
 }
 
+
 def output_last_operations(operations: list) -> str:
     message_text = f'Последние операции:\n'
     for operation in operations:
@@ -159,6 +177,34 @@ last_operations: dict = {
     'last_operations_empty': 'Список последних операций пуст.'
 }
 
+
+def ticker_added(ticker_name: str):
+    return f'Тикер ${ticker_name} успешно добавлен.\n' \
+           f'Чтобы добавить еще, отправьте название тикера.'
+
+def ticker_value_output(ticker_name: str):
+    return f'📊 ${ticker_name}: {data.market.market_functions.parse_ticker(ticker_name=ticker_name)}'
+
+
+market: dict = {
+    'start_market_message': 'Добро пожаловать в раздел "Биржа" 📈\nЗдесь вы сможете отслеживать котировки акций в реальном времени.\n\n'
+                            'Для того, чтобы добавить желаемую компанию в свой список отслеживаемых нажмите кнопку "Добавить тикер".\n\n'
+                            'Чтобы посмотреть добавленные тикеры нажмите кнопку "Мои тикеры".',
+    'add_ticker': 'Отправьте название тикера, например: $SBER.\n\nБудьте внимательны, так как неверные тикеры будут выдавать ошибку '
+                  'при попытке получения котировок.',
+    'back_to_market': 'Перехожу в раздел "Биржа".',
+    'incorrect_ticker_name': 'Некорректное имя тикера. Повторите попытку.',
+    'nonexistent_ticker_name': 'Данный тикер не существует. Повторите попытку.',
+    'ticker_exists': 'Тикер с таким названием уже существует.',
+    'max_tickers': 'Достигнуто максимальное количество тикеров',
+    'ticker_added': ticker_added,
+    'tickers_empty': 'У вас не добавлено ни одного тикера. Добавьте хотя бы один тикер и повторите попытку.',
+    'load_user_tickers_message': 'На клавиатуре представлен список ваших тикеров. Чтобы получить '
+                                 'текущую котировку нажмите на нужный тикер.',
+    'ticker_value_output': ticker_value_output
+}
+
+
 def output_statistic(username: str, operations_list: list, current_date: str) -> str:
     try:
         first_date: str = operations_list[0][2]
@@ -169,60 +215,60 @@ def output_statistic(username: str, operations_list: list, current_date: str) ->
     finally:
         categories_values: dict = {
             'products': {
-                    'title': 'Продукты',
-                    'value': 0
+                'title': 'Продукты',
+                'value': 0
             },
             'cafes': {
-                    'title': 'Кафе',
-                    'value': 0
+                'title': 'Кафе',
+                'value': 0
             },
             'auto': {
-                    'title': 'Автомобиль',
-                    'value': 0
+                'title': 'Автомобиль',
+                'value': 0
             },
             'transport': {
-                    'title': 'Транспорт',
-                    'value': 0
+                'title': 'Транспорт',
+                'value': 0
             },
             'home': {
-                    'title': 'Дом',
-                    'value': 0
+                'title': 'Дом',
+                'value': 0
             },
             'entertainment': {
-                    'title': 'Развлечения',
-                    'value': 0
+                'title': 'Развлечения',
+                'value': 0
             },
             'sport': {
-                    'title': 'Спорт',
-                    'value': 0
+                'title': 'Спорт',
+                'value': 0
             },
             'health': {
-                    'title': 'Здоровье',
-                    'value': 0
+                'title': 'Здоровье',
+                'value': 0
             },
             'education': {
-                    'title': 'Образование',
-                    'value': 0
+                'title': 'Образование',
+                'value': 0
             },
             'gifts': {
-                    'title': 'Подарки',
-                    'value': 0
+                'title': 'Подарки',
+                'value': 0
             },
             'beauty': {
-                    'title': 'Красота',
-                    'value': 0
+                'title': 'Красота',
+                'value': 0
             },
             'clothes': {
-                    'title': 'Одежда',
-                    'value': 0
+                'title': 'Одежда',
+                'value': 0
             },
             'technic': {
-                    'title': 'Техника',
-                    'value': 0
+                'title': 'Техника',
+                'value': 0
             },
             'subscriptions': {
-                    'title': 'Подписки',
-                    'value': 0
+                'title': 'Подписки',
+                'value': 0
             }
         }
         total_sum: float = 0
@@ -266,5 +312,3 @@ settings: dict = {
 other: dict = {
     'back_to_menu': 'Возвращаюсь в главное меню.'
 }
-
-

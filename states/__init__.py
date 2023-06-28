@@ -10,5 +10,11 @@ class LastOperationsStates(StatesGroup):
     get_callback = State()
 
 
+class MarketStates(StatesGroup):
+    get_mode = State()
+    get_new_ticker = State()
+    get_ticker_for_parsing = State()
+
+
 class SettingsStates(StatesGroup):
     get_option = State()
