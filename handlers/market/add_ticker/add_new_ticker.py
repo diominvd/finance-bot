@@ -1,7 +1,6 @@
 from aiogram import Router, F
 from aiogram.types import Message
 from aiogram.filters import Text
-from aiogram.fsm.context import FSMContext
 
 import handlers
 from data.market import market_functions

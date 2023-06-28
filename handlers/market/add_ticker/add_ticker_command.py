@@ -1,5 +1,5 @@
 from aiogram import Router
-from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import Message
 from aiogram.filters import Text
 from aiogram.fsm.context import FSMContext
 
