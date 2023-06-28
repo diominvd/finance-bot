@@ -13,6 +13,16 @@ def insert_new_user_into_database(user_id: int) -> None:
         print(f'> insert user {user_id} into database/users: success.')
 
 
+def insert_new_user_into_database_market(user_id: int) -> None:
+    try:
+        cursor.execute('INSERT INTO market (user_id) VALUES (?)', (user_id, ))
+    except:
+        print(f'> insert user {user_id} into database/market: error.')
+    else:
+        connection.commit()
+        print(f'> insert user {user_id} into database/market: success.')
+
+
 def insert_operation_into_database(user_id: int) -> None:
     # Fetch operation data from boot storage.
     category: str = bot_storage[user_id]['category']

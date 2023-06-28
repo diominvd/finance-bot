@@ -30,3 +30,8 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS operations(
 	value REAL,
 	date TEXT,
 	FOREIGN KEY (user_id) REFERENCES users (user_id))''')
+
+cursor.execute('''CREATE TABLE IF NOT EXISTS market(
+    user_id INTEGER UNIQUE,
+    quotes TEXT,
+    FOREIGN KEY (user_id) REFERENCES users (user_id))''')
