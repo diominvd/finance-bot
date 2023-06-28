@@ -1,5 +1,7 @@
 import pydantic.main
 
+import data.market.market_functions
+
 keyboards: dict = {
     'menu_keyboard': {
         'add_operation': 'Добавить операцию',
@@ -91,6 +93,9 @@ keyboards: dict = {
     },
     'add_ticker_keyboard': {
         'cancel': 'Отмена'
+    },
+    'my_tickers_keyboard': {
+        'cancel': 'Отмена'
     }
 }
 
@@ -174,7 +179,11 @@ last_operations: dict = {
 
 
 def ticker_added(ticker_name: str):
-    return f'Тикер ${ticker_name} успешно добавлен.'
+    return f'Тикер ${ticker_name} успешно добавлен.\n' \
+           f'Чтобы добавить еще, отправьте название тикера.'
+
+def ticker_value_output(ticker_name: str):
+    return f'📊 ${ticker_name}: {data.market.market_functions.parse_ticker(ticker_name=ticker_name)}'
 
 
 market: dict = {
@@ -185,8 +194,14 @@ market: dict = {
                   'при попытке получения котировок.',
     'back_to_market': 'Перехожу в раздел "Биржа".',
     'incorrect_ticker_name': 'Некорректное имя тикера. Повторите попытку.',
+    'nonexistent_ticker_name': 'Данный тикер не существует. Повторите попытку.',
     'ticker_exists': 'Тикер с таким названием уже существует.',
-    'ticker_added': ticker_added
+    'max_tickers': 'Достигнуто максимальное количество тикеров',
+    'ticker_added': ticker_added,
+    'tickers_empty': 'У вас не добавлено ни одного тикера. Добавьте хотя бы один тикер и повторите попытку.',
+    'load_user_tickers_message': 'На клавиатуре представлен список ваших тикеров. Чтобы получить '
+                                 'текущую котировку нажмите на нужный тикер.',
+    'ticker_value_output': ticker_value_output
 }
 
 

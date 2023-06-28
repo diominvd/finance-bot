@@ -13,6 +13,7 @@ class LastOperationsStates(StatesGroup):
 class MarketStates(StatesGroup):
     get_mode = State()
     get_new_ticker = State()
+    get_ticker_for_parsing = State()
 
 
 class SettingsStates(StatesGroup):

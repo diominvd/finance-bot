@@ -3,7 +3,7 @@ from aiogram.types import Message, ReplyKeyboardRemove
 
 import config
 
-from keyboards.reply import menu_keyboard, settings_keyboard, market_keyboard, add_ticker_keyboard
+from keyboards.reply import menu_keyboard, settings_keyboard, market_keyboard, add_ticker_keyboard, user_tickers_keyboard
 from keyboards.inline import categories_keyboard, last_operations_keyboard
 
 
