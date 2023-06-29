@@ -1,11 +1,30 @@
 import aiogram.types
-from config import dispatcher
 import pydantic.main
 
-from handlers.commands import start, help
+from config import dispatcher
+
+
+from handlers.commands import help, start
 dispatcher.include_routers(
-    start.router,
-    help.router
+    help.router,
+    start.router
+)
+
+from handlers.last_operations import delete_last_operation, last_operations_command
+dispatcher.include_routers(
+    delete_last_operation.router,
+    last_operations_command.router
+)
+
+from handlers.market import market_command
+from handlers.market.add_ticker import add_new_ticker, add_ticker_command
+from handlers.market.my_tickers import get_ticker_for_parsing, my_ticker_command
+dispatcher.include_routers(
+    market_command.router,
+    add_new_ticker.router,
+    add_ticker_command.router,
+    get_ticker_for_parsing.router,
+    my_ticker_command.router
 )
 
 from handlers.new_operation import add_operation_command, operation_category, operation_value
@@ -15,22 +34,11 @@ dispatcher.include_routers(
     operation_value.router
 )
 
-from handlers.last_operations import last_operations_command, delete_last_operation
+from handlers.other import incorrect_ticker, market_menu, menu
 dispatcher.include_routers(
-    last_operations_command.router,
-    delete_last_operation.router
-)
-
-from handlers.market import market_command, back_to_market
-from handlers.market.add_ticker import add_ticker_command, add_new_ticker
-from handlers.market.my_tickers import my_ticker_command, get_ticker_for_parsing
-dispatcher.include_routers(
-    market_command.router,
-    add_ticker_command.router,
-    add_new_ticker.router,
-    back_to_market.router,
-    my_ticker_command.router,
-    get_ticker_for_parsing.router
+    incorrect_ticker.router,
+    market_menu.router,
+    menu.router
 )
 
 from handlers.profile import profile_command_handler
@@ -38,24 +46,11 @@ dispatcher.include_routers(
     profile_command_handler.router
 )
 
-from handlers.settings import settings_command_handler, delete_all_operations_handler
+from handlers.settings import delete_all_operations_handler, settings_command_handler
 dispatcher.include_routers(
-    settings_command_handler.router,
-    delete_all_operations_handler.router
+    delete_all_operations_handler.router,
+    settings_command_handler.router
 )
-
-from handlers.other import menu
-dispatcher.include_routers(
-    menu.router
-)
-
-
-def current_date_formation() -> str:
-    import datetime
-    date: list = str(datetime.date.today()).split('-')
-    date: str = f'{date[2]}.{date[1]}.{date[0]}'
-    return date
-
 
 def fetch_user_id(obj: pydantic.main.ModelMetaclass) -> int:
     return int(obj.from_user.id)

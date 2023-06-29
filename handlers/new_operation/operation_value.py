@@ -4,11 +4,10 @@ from aiogram.fsm.context import FSMContext
 
 import config
 import handlers
-from data.storage import storage_functions
-from data.database import database_functions
+from data import database, storage
 from keyboards import menu_kb
 from states import NewOperationStates
-import strings
+import lines
 
 router = Router(name=__name__)
 
@@ -18,18 +17,18 @@ async def operation_value_handler(message: Message, state: FSMContext, bot=confi
     try:
         operation_value: float = float(message.text)
     except:
-        await message.answer(text=strings.new_operation['incorrect_value'])
+        await message.answer(text=lines.new_operation_lines['error_text_incorrect_value'])
     else:
         # Update operation value int bot storage.
-        storage_functions.update_operation_data_in_bot_storage(user_id=handlers.fetch_user_id(obj=message),
+        storage.update_operation_data_in_bot_storage(user_id=handlers.fetch_user_id(obj=message),
                                                                field='value',
                                                                value=operation_value)
 
         # Insert operation data into database.
-        database_functions.insert_operation_into_database(user_id=handlers.fetch_user_id(obj=message))
+        database.insert_operation_into_database_operations(user_id=handlers.fetch_user_id(obj=message))
 
         # Edit message with value query.
-        await bot.edit_message_text(text=strings.new_operation['operation_value_chosen'](value=message.text),
+        await bot.edit_message_text(text=lines.new_operation_lines['def_text_value_inputted'](value=message.text),
                                     chat_id=message.chat.id,
                                     message_id=message.message_id - 1)
 
@@ -39,11 +38,11 @@ async def operation_value_handler(message: Message, state: FSMContext, bot=confi
 
         # Send final message.
         await bot.send_message(chat_id=message.chat.id,
-                               text=strings.new_operation['operation_complete'](user_id=handlers.fetch_user_id(obj=message)),
+                               text=lines.new_operation_lines['def_text_operation_complete'](user_id=handlers.fetch_user_id(obj=message)),
                                reply_markup=menu_kb)
 
         # Remove operation from bot storage.
-        storage_functions.remove_operation_from_bot_storage(user_id=handlers.fetch_user_id(obj=message))
+        storage.remove_operation_from_bot_storage(user_id=handlers.fetch_user_id(obj=message))
 
         # Clear all states.
         await state.clear()
