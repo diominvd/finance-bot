@@ -1,11 +1,11 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-from strings import keyboards
+from lines import keyboards_lines
 
 
 def create_add_ticker_keyboard() -> ReplyKeyboardMarkup:
     keyboard_buttons = [
         [
-            KeyboardButton(text=keyboards['add_ticker_keyboard']['cancel']),
+            KeyboardButton(text=keyboards_lines['add_ticker_keyboard']['cancel']),
         ]
     ]
     add_ticker_keyboard = ReplyKeyboardMarkup(resize_keyboard=True,

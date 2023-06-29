@@ -7,7 +7,7 @@ from aiogram.filters import Text
 import config
 import handlers
 from keyboards import menu_kb
-from strings import other
+import lines
 
 router = Router(name=__name__)
 
@@ -18,7 +18,7 @@ async def menu_callback_handler(obj: pydantic.main.ModelMetaclass, state: FSMCon
         case aiogram.types.Message:
             # Send loading message.
             await bot.send_message(chat_id=obj.chat.id,
-                                   text=other['back_to_menu'],
+                                   text=lines.other_lines['text_back_menu'],
                                    reply_markup=menu_kb)
         case aiogram.types.CallbackQuery:
             # Remove callback delay.
@@ -31,7 +31,7 @@ async def menu_callback_handler(obj: pydantic.main.ModelMetaclass, state: FSMCon
 
             # Send loading message.
             await bot.send_message(chat_id=obj.message.chat.id,
-                                   text=other['back_to_menu'],
+                                   text=lines.other_lines['text_back_menu'],
                                    reply_markup=menu_kb)
 
     # Clear all states.
