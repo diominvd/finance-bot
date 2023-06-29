@@ -4,12 +4,13 @@ from aiogram.filters import Text
 from aiogram.fsm.context import FSMContext
 
 from config import bot
-from data.storage import storage_functions
+from data import storage
 import handlers
 from states import NewOperationStates
-import strings
+import lines
 
 router = Router(name=__name__)
+
 
 @router.callback_query(NewOperationStates.get_operation_category, Text(startswith='category_'))
 async def operation_category_handler(callback_query: CallbackQuery, state: FSMContext, bot=bot) -> None:
@@ -20,19 +21,19 @@ async def operation_category_handler(callback_query: CallbackQuery, state: FSMCo
     operation_category: str = callback_query.data.split('_')[1]
 
     # Update operation data in bot storage.
-    storage_functions.update_operation_data_in_bot_storage(user_id=handlers.fetch_user_id(obj=callback_query),
-                                                           field='category',
-                                                           value=operation_category)
+    storage.update_operation_data_in_bot_storage(user_id=handlers.fetch_user_id(obj=callback_query),
+                                                 field='category',
+                                                 value=operation_category)
 
     # Remove categories keyboard.
-    await bot.edit_message_text(text=strings.new_operation['operation_category_chosen'](category=operation_category),
+    await bot.edit_message_text(text=lines.new_operation_lines['def_text_category_chosen'](category=operation_category),
                                 chat_id=callback_query.message.chat.id,
                                 message_id=callback_query.message.message_id,
                                 reply_markup=None)
 
     # Send message to get operation value.
     await bot.send_message(chat_id=callback_query.message.chat.id,
-                           text=strings.new_operation['choose_operation_value'])
+                           text=lines.new_operation_lines['text_input_value'])
 
     # Set next state.
     await state.set_state(NewOperationStates.get_operation_value)

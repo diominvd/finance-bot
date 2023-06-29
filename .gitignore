@@ -5,7 +5,7 @@ data/database.db
 fsm/__pycache__
 handlers/__pycache__
 keyboards/__pycache__
-strings/__pycache__
+lines/__pycache__
 src
 venv
 

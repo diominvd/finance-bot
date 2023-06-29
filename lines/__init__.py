@@ -1,15 +1,14 @@
 import pydantic.main
+import datetime
 
-import data.market.market_functions
+from config import bot_storage
+from data import database, market
 
-keyboards: dict = {
-    'menu_keyboard': {
-        'add_operation': 'Добавить операцию',
-        'last_operations': 'Последние операции',
-        'market': 'Биржа',
-        'profile': 'Профиль',
-        'settings': 'Настройки'
-    },
+
+keyboards_lines: dict = {
+    'add_ticker_keyboard': {
+            'cancel': 'Отмена'
+        },
     'categories_keyboard': {
         'products': {
             'title': 'Продукты',
@@ -82,21 +81,25 @@ keyboards: dict = {
             'callback_data': 'menu'
         }
     },
-    'settings_keyboard': {
-        'clear_all_operations': 'Очистить список операций',
-        'menu': 'Главное меню'
-    },
     'market_keyboard': {
         'add_ticker': 'Добавить тикер',
         'my_tickers': 'Мои тикеры',
         'menu': 'Главное меню'
     },
-    'add_ticker_keyboard': {
-        'cancel': 'Отмена'
+    'menu_keyboard': {
+        'add_operation': 'Добавить операцию',
+        'last_operations': 'Последние операции',
+        'market': 'Биржа',
+        'profile': 'Профиль',
+        'settings': 'Настройки'
     },
     'my_tickers_keyboard': {
         'cancel': 'Отмена'
-    }
+    },
+    'settings_keyboard': {
+        'clear_all_operations': 'Очистить список операций',
+        'menu': 'Главное меню'
+    },
 }
 
 categories: dict = {
@@ -116,13 +119,8 @@ categories: dict = {
     'subscriptions': 'Подписки'
 }
 
-commands: dict = {
-    'start_command_text': 'Добро пожаловать в Finance Bot 💲\n\n'
-                          'Этот бот поможет вести учёт расходов. '
-                          'Вы можете классифицировать все операции по категориям, '
-                          'просматривать последние операции и формировать отчёт за определённый период.\n\n'
-                          'Для получения дополнительной информации напишите команду "/help."',
-    'help_command_text': 'Список основных функций бота:\n\n'
+commands_lines: dict = {
+    'text_help_command': 'Список основных функций бота:\n\n'
                          '1. <b>Добавить операцию</b> - Позволяет добавить операцию с последующим выбором категории и суммы. '
                          'Операция сохраняется в базу данных.\n\n'
                          '2. <b>Последние операции</b> - Отображает последние 5 операций с возможностью '
@@ -130,82 +128,104 @@ commands: dict = {
                          '3. <b>Профиль</b> - Отображает вашу статистику по всем категориям за отчётный период.\n\n'
                          '4. <b>Настройки</b> - Дополнительные функции.\n'
                          '4.1 <b>Очистить историю операций</b> - Удаляет всю историю операций. При этом сбрасывается отчётный период. '
-                         'Чтобы начать новый период добавьте новую операцию.'
+                         'Чтобы начать новый период добавьте новую операцию.',
+    'text_start_command': 'Добро пожаловать в Finance Bot 💲\n\n'
+                          'Этот бот поможет вести учёт расходов. '
+                          'Вы можете классифицировать все операции по категориям, '
+                          'просматривать последние операции и формировать отчёт за определённый период.\n\n'
+                          'Для получения дополнительной информации напишите команду "/help."',
 }
 
 
-def output_category(category: str = None) -> str:
+def last_operations(user_id: int) -> str:
+    operations_list: list = database.select_operations_from_database_operations(user_id=user_id, limit=5)
+    message_text: str = f'Последние операции:\n'
+
+    for operation in operations_list:
+        category: str = operation[0]
+        value: float = operation[1]
+        date: str = operation[2]
+        message_text += f'{value} ₽ | {categories[category]} | {date}\n'
+
+    return message_text
+
+
+last_operations_lines: dict = {
+    'def_text_last_operations': last_operations,
+    'error_text_last_operations_empty': 'Список последних операций пуст.',
+}
+
+
+def ticker_added(ticker: str) -> str:
+    return f'Тикер ${ticker} успешно добавлен.'
+
+
+def ticker_value(ticker: str) -> str:
+    return f'📊 ${ticker}: {market.parse_ticker(ticker=ticker)}'
+
+
+market_lines: dict = {
+    'def_text_ticker_added': ticker_added,
+    'def_text_ticker_value': ticker_value,
+
+    'error_text_incorrect_ticker': 'Некорректное имя тикера. Повторите попытку.',
+    'error_text_nonexistent_ticker': 'Данный тикер не существует. Повторите попытку.',
+    'error_text_tickers_empty': 'У вас не добавлено ни одного тикера. '
+                                'Добавьте хотя бы один тикер и повторите попытку.',
+    'error_text_ticker_exists': 'Тикер с таким названием уже существует.',
+    'error_text_tickers_limit': 'Достигнуто максимальное количество тикеров.',
+    'error_text_ticker_not_added': 'Тикер с таким названием не добавлен.',
+    
+    'text_add_ticker': 'Отправьте название тикера, например: $SBER.\n\n'
+                       'Будьте внимательны, так как неверные тикеры будут выдавать ошибку '
+                       'при попытке получения котировок.',
+    'text_back_to_market': 'Перехожу в раздел "Биржа".',
+    'text_market': 'Добро пожаловать в раздел "Биржа" 📈\nЗдесь вы сможете отслеживать котировки акций в реальном времени.\n\n'
+                   'Для того, чтобы добавить желаемую компанию в свой список отслеживаемых нажмите кнопку "Добавить тикер".\n\n'
+                   'Чтобы посмотреть добавленные тикеры нажмите кнопку "Мои тикеры".',
+    'text_user_tickers': 'На клавиатуре представлен список ваших тикеров. Чтобы получить '
+                         'текущую котировку нажмите на нужный тикер.',
+}
+
+
+def category(category: str = None) -> str:
     return f'Выбрана категория: {categories[category]}'
 
 
-def output_value(value: str = None) -> str:
+def value(value: str = None) -> str:
     return f'Сумма операции: {float(value)} ₽'
 
 
-def operation_complete_output(user_id: int = None) -> str:
-    from config import bot_storage
+def def_text_operation_complete(user_id: int) -> str:
     return f'📌 Операция успешно добавлена.\n' \
            f'Категория: {categories[bot_storage[user_id]["category"]]}\n' \
            f'Сумма: {bot_storage[user_id]["value"]} ₽\n' \
            f'Дата создания: {bot_storage[user_id]["date"]}\n\n'
 
 
-new_operation: dict = {
-    'choose_operation_category': 'Пожалуйста, укажите категорию для операции.',
-    'operation_category_chosen': output_category,
-    'choose_operation_value': 'Пожалуйста, укажите сумму операции.',
-    'operation_value_chosen': output_value,
-    'incorrect_value': 'Неверное значение суммы операции. Повторите попытку.',
-    'operation_complete': operation_complete_output
+new_operation_lines: dict = {
+    'def_text_category_chosen': category,
+    'def_text_operation_complete': def_text_operation_complete,
+    'def_text_value_inputted': value,
+
+    'error_text_incorrect_value': 'Неверное значение суммы операции. Повторите попытку.',
+
+    'text_choose_category': 'Пожалуйста, укажите категорию для операции.',
+    'text_input_value': 'Пожалуйста, укажите сумму операции.',
 }
 
 
-def output_last_operations(operations: list) -> str:
-    message_text = f'Последние операции:\n'
-    for operation in operations:
-        operation_id: int = operation[0]
-        user_id: int = operation[1]
-        category: str = operation[2]
-        value: float = operation[3]
-        date: str = operation[4]
-        message_text += f'{value} ₽ | {categories[category]} | {date}\n'
-    return message_text
+def current_date_formation() -> str:
+    date: list = str(datetime.date.today()).split('-')
+    date: str = f'{date[2]}.{date[1]}.{date[0]}'
+
+    return date
 
 
-last_operations: dict = {
-    'output_last_operations': output_last_operations,
-    'last_operations_empty': 'Список последних операций пуст.'
-}
+def output_statistic(username: str, user_id: int) -> str:
+    operations_list: list = database.select_operations_from_database_operations(user_id=user_id)
+    current_date: str = current_date_formation()
 
-
-def ticker_added(ticker_name: str):
-    return f'Тикер ${ticker_name} успешно добавлен.\n' \
-           f'Чтобы добавить еще, отправьте название тикера.'
-
-def ticker_value_output(ticker_name: str):
-    return f'📊 ${ticker_name}: {data.market.market_functions.parse_ticker(ticker_name=ticker_name)}'
-
-
-market: dict = {
-    'start_market_message': 'Добро пожаловать в раздел "Биржа" 📈\nЗдесь вы сможете отслеживать котировки акций в реальном времени.\n\n'
-                            'Для того, чтобы добавить желаемую компанию в свой список отслеживаемых нажмите кнопку "Добавить тикер".\n\n'
-                            'Чтобы посмотреть добавленные тикеры нажмите кнопку "Мои тикеры".',
-    'add_ticker': 'Отправьте название тикера, например: $SBER.\n\nБудьте внимательны, так как неверные тикеры будут выдавать ошибку '
-                  'при попытке получения котировок.',
-    'back_to_market': 'Перехожу в раздел "Биржа".',
-    'incorrect_ticker_name': 'Некорректное имя тикера. Повторите попытку.',
-    'nonexistent_ticker_name': 'Данный тикер не существует. Повторите попытку.',
-    'ticker_exists': 'Тикер с таким названием уже существует.',
-    'max_tickers': 'Достигнуто максимальное количество тикеров',
-    'ticker_added': ticker_added,
-    'tickers_empty': 'У вас не добавлено ни одного тикера. Добавьте хотя бы один тикер и повторите попытку.',
-    'load_user_tickers_message': 'На клавиатуре представлен список ваших тикеров. Чтобы получить '
-                                 'текущую котировку нажмите на нужный тикер.',
-    'ticker_value_output': ticker_value_output
-}
-
-
-def output_statistic(username: str, operations_list: list, current_date: str) -> str:
     try:
         first_date: str = operations_list[0][2]
     except:
@@ -300,15 +320,15 @@ def output_statistic(username: str, operations_list: list, current_date: str) ->
         return message_text
 
 
-profile: dict = {
-    'output_statistic': output_statistic
+profile_lines: dict = {
+    'def_text_statistic': output_statistic
 }
 
-settings: dict = {
-    'settings_command_message': 'Открываю настройки.',
-    'all_operations_deleted': 'Список операций очищен.'
+settings_lines: dict = {
+    'text_settings': 'Открываю настройки.',
+    'text_all_operations_deleted': 'Список операций очищен.'
 }
 
-other: dict = {
-    'back_to_menu': 'Возвращаюсь в главное меню.'
+other_lines: dict = {
+    'text_back_menu': 'Возвращаюсь в главное меню.'
 }
