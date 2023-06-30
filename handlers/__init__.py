@@ -16,20 +16,6 @@ dispatcher.include_routers(
     last_operations_command.router
 )
 
-from handlers.market import market_command
-from handlers.market.add_ticker import add_new_ticker, add_ticker_command
-from handlers.market.delete_ticker import delete_ticker_command, get_ticker_for_delete
-from handlers.market.my_tickers import get_ticker_for_parsing, my_ticker_command
-dispatcher.include_routers(
-    add_new_ticker.router,
-    add_ticker_command.router,
-    delete_ticker_command.router,
-    get_ticker_for_delete.router,
-    get_ticker_for_parsing.router,
-    market_command.router,
-    my_ticker_command.router
-)
-
 from handlers.new_operation import add_operation_command, operation_category, operation_value
 dispatcher.include_routers(
     add_operation_command.router,
@@ -37,10 +23,8 @@ dispatcher.include_routers(
     operation_value.router
 )
 
-from handlers.other import incorrect_ticker, market_menu, menu
+from handlers.other import menu
 dispatcher.include_routers(
-    incorrect_ticker.router,
-    market_menu.router,
     menu.router
 )
 
