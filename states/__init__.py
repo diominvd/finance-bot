@@ -11,6 +11,8 @@ class MarketStates(StatesGroup):
     get_mode = State()
     get_new_ticker = State()
     get_ticker_for_parsing = State()
+    get_ticker_for_delete = State()
 
 class SettingsStates(StatesGroup):
     get_option = State()
+    get_ticker_for_delete = State()

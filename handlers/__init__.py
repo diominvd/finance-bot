@@ -16,17 +16,6 @@ dispatcher.include_routers(
     last_operations_command.router
 )
 
-from handlers.market import market_command
-from handlers.market.add_ticker import add_new_ticker, add_ticker_command
-from handlers.market.my_tickers import get_ticker_for_parsing, my_ticker_command
-dispatcher.include_routers(
-    market_command.router,
-    add_new_ticker.router,
-    add_ticker_command.router,
-    get_ticker_for_parsing.router,
-    my_ticker_command.router
-)
-
 from handlers.new_operation import add_operation_command, operation_category, operation_value
 dispatcher.include_routers(
     add_operation_command.router,
@@ -34,10 +23,8 @@ dispatcher.include_routers(
     operation_value.router
 )
 
-from handlers.other import incorrect_ticker, market_menu, menu
+from handlers.other import menu
 dispatcher.include_routers(
-    incorrect_ticker.router,
-    market_menu.router,
     menu.router
 )
 
@@ -46,10 +33,10 @@ dispatcher.include_routers(
     profile_command_handler.router
 )
 
-from handlers.settings import delete_all_operations_handler, settings_command_handler
+from handlers.settings import delete_all_operations, settings_command
 dispatcher.include_routers(
-    delete_all_operations_handler.router,
-    settings_command_handler.router
+    delete_all_operations.router,
+    settings_command.router
 )
 
 def fetch_user_id(obj: pydantic.main.ModelMetaclass) -> int:
