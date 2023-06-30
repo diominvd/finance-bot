@@ -26,7 +26,7 @@ async def delete_last_operation_callback_handler(callback_query: CallbackQuery, 
                                  message_id=callback_query.message.message_id)
 
         await bot.send_message(chat_id=callback_query.message.chat.id,
-                               text=lines.last_operations_lines['last_operations_empty_text_text'],
+                               text=lines.last_operations_lines['error_text_last_operations_empty'],
                                reply_markup=menu_kb)
 
         # Clear all states.
