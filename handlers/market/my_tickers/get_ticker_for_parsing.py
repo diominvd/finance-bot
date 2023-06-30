@@ -15,7 +15,7 @@ async def ticker_for_parsing_handler(message: Message):
     user_tickers: list = market.select_user_tickers_from_database_market(user_id=handlers.fetch_user_id(obj=message))
 
     # Check ticker length.
-    if len(message.text) > 4 or len(message.text) < 4:
+    if not message.text.startswith('$'):
         await message.answer(text=lines.market_lines['error_text_incorrect_ticker'],
                              reply_markup=user_tickers_keyboard.create_my_tickers_keyboard(tickers_list=user_tickers))
     else:
