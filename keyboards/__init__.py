@@ -11,7 +11,7 @@ categories_kb: InlineKeyboardMarkup = categories_keyboard.create_categories_keyb
 last_operations_kb: InlineKeyboardMarkup = last_operations_keyboard.create_last_operations_keyboard()
 
 menu_kb: ReplyKeyboardMarkup = menu_keyboard.create_menu_keyboard()
-market_kb: ReplyKeyboardMarkup = market_keyboard.create_market_keyboard()
+# market_kb: Dynamic keyboard. For use import def in file.
 add_ticker_kb: ReplyKeyboardMarkup = add_ticker_keyboard.create_add_ticker_keyboard()
 settings_kb: ReplyKeyboardMarkup = settings_keyboard.create_settings_keyboard()
 

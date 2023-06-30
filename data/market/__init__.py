@@ -56,9 +56,7 @@ def select_user_tickers_from_database_market(user_id: int) -> list:
     return user_tickers
 
 
-def tickers_line_constructor(tickers_list: list, new_ticker: str) -> str:
-    tickers_list.append(new_ticker)
-    
+def tickers_line_constructor(tickers_list: list) -> str:
     tickers_line: str = str(json.dumps(tickers_list))
 
     return tickers_line
@@ -70,10 +68,13 @@ def add_new_ticker_for_user_in_database_market(user_id: int, new_ticker: str) ->
             # Fetch user tickers for check limit and formatted final message
             user_tickers: list = select_user_tickers_from_database_market(user_id=user_id)
 
+            # Add new ticker in user tickers.
+            user_tickers.append(new_ticker)
+
             if not check_user_tickers_limit(tickers_list=user_tickers):
 
                 # Generate tickers line for insert into database.
-                tickers_line: str = tickers_line_constructor(tickers_list=user_tickers, new_ticker=new_ticker)
+                tickers_line: str = tickers_line_constructor(tickers_list=user_tickers)
 
                 try:
                     # Update user tickers in database/market.
@@ -110,3 +111,29 @@ def parse_ticker(ticker: str) -> str:
         print(f'> parsing ticker value: error.', response.status_code)
 
         return 'Ошибка при получении значения.'
+
+
+def delete_user_ticker_from_database(user_id: int, ticker: str) -> str:
+    # Fetch user ticker from database.
+    user_tickers: list = select_user_tickers_from_database_market(user_id=user_id)
+
+    # Check ticker in user tickers
+    if ticker in user_tickers:
+        user_tickers.remove(ticker)
+        tickers_line: str = tickers_line_constructor(tickers_list=user_tickers)
+
+        try:
+            # Update user tickers in database/market.
+            cursor.execute('UPDATE market SET tickers = ? WHERE user_id = ?', (tickers_line, user_id))
+        except:
+            print(f'> delete ticker {ticker} from user {user_id}: error.')
+
+            return 'Error'
+        else:
+            connection.commit()
+
+            print(f'> add ticker  delete ticker {ticker} from user {user_id}: success.')
+
+            return lines.market_lines['text_ticker_deleted']
+    else:
+        return lines.market_lines['error_text_ticker_not_added']
