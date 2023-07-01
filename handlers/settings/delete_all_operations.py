@@ -12,7 +12,7 @@ from states import SettingsStates
 router = Router(name=__name__)
 
 @router.message(SettingsStates.get_option, Text('Очистить список операций'))
-async def settings_command_handler(message: Message, state: FSMContext):
+async def delete_all_operations_handler(message: Message, state: FSMContext):
     # Fetch all user operations from database.
     operations_list: list = database.select_operations_from_database_operations(user_id=handlers.fetch_user_id(obj=message))
 
