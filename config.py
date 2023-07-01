@@ -9,3 +9,4 @@ dispatcher: aiogram.Dispatcher = aiogram.Dispatcher()
 
 # BOT_ROM is necessary to monitor active operations that are in the process of being created.
 bot_storage: dict = {}
+version: str = 1.1
