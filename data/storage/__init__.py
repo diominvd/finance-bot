@@ -1,9 +1,11 @@
 from config import bot_storage
+from data import database
 
 
 def insert_operation_into_bot_storage(user_id: int) -> None:
     try:
         bot_storage[user_id] = {
+            'currency': database.select_user_currency(user_id=user_id),
             'category': str,
             'value': float,
             'date': str

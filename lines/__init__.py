@@ -6,6 +6,36 @@ from config import bot_storage
 from data import database
 
 keyboards_lines: dict = {
+    'currencies_keyboard': {
+        'RUB': {
+            'title': 'RUB (₽)',
+            'callback_data': 'currency_₽'
+        },
+        'BYN': {
+            'title': 'BYN (Br)',
+            'callback_data': 'currency_Br'
+        },
+        'UAH': {
+            'title': 'UAH (₴)',
+            'callback_data': 'currency_₴'
+        },
+        'KZT': {
+            'title': 'KZT (₸)',
+            'callback_data': 'currency_₸'
+        },
+        'USD': {
+            'title': 'USD ($)',
+            'callback_data': 'currency_$'
+        },
+        'EUR': {
+            'title': 'EUR (€)',
+            'callback_data': 'currency_€'
+        },
+        'cancel': {
+            'title': 'Отмена',
+            'callback_data': 'cancel'
+        }
+    },
     'categories_keyboard': {
         'products': {
             'title': 'Продукты',
@@ -86,6 +116,7 @@ keyboards_lines: dict = {
     },
     'settings_keyboard': {
         'clear_all_operations': 'Очистить список операций',
+        'change_currency': 'Изменить валюту',
         'menu': 'Главное меню'
     },
 }
@@ -128,16 +159,36 @@ commands_lines: dict = {
                          f'Developer: @diominvd',
 }
 
+def currency(symbol: str) -> str:
+    return f'Выбрана валюта: {symbol}'
+
+
+def change_currency(symbol: str) -> str:
+    return f'Установлена валюта: {symbol}\n' \
+           f'Список операций очищен.'
+
+
+currency_lines: dict = {
+    'def_text_currency_chosen': currency,
+
+    'text_choose_currency': 'Пожалуйста, выберите вашу валюту из списка ниже.',
+    'text_currency_changed': change_currency,
+
+    'warning_text_change_currency': '❗️При изменении валюты список операций будет очищен. '
+                                    'Для изменения валюты выберите необходимую из списка ниже.'
+}
+
 
 def last_operations(user_id: int) -> str:
     operations_list: list = database.select_operations_from_database_operations(user_id=user_id, limit=5)
     message_text: str = f'Последние операции:\n'
 
     for operation in operations_list:
-        category: str = operation[0]
-        value: float = operation[1]
-        date: str = operation[2]
-        message_text += f'{value} ₽ | {categories[category]} | {date}\n'
+        currency: str = operation[0]
+        category: str = operation[1]
+        value: float = operation[2]
+        date: str = operation[3]
+        message_text += f'{value} {currency} | {categories[category]} | {date}\n'
 
     return message_text
 
@@ -153,14 +204,15 @@ def category(category: str = None) -> str:
     return f'Выбрана категория: {categories[category]}'
 
 
-def value(value: str = None) -> str:
-    return f'Сумма операции: {float(value)} ₽'
+def value(user_id: int, value: str = None) -> str:
+    return f'Сумма операции: {float(value)} {database.select_user_currency(user_id=user_id)}'
 
 
 def def_text_operation_complete(user_id: int) -> str:
+    currency: str = database.select_user_currency(user_id=user_id)
     return f'📌 Операция успешно добавлена.\n' \
            f'Категория: {categories[bot_storage[user_id]["category"]]}\n' \
-           f'Сумма: {bot_storage[user_id]["value"]} ₽\n' \
+           f'Сумма: {bot_storage[user_id]["value"]} {currency}\n' \
            f'Дата создания: {bot_storage[user_id]["date"]}\n\n'
 
 
@@ -188,7 +240,7 @@ def output_statistic(username: str, user_id: int) -> str:
     current_date: str = current_date_formation()
 
     try:
-        first_date: str = operations_list[0][2]
+        first_date: str = operations_list[0][3]
     except:
         reporting_period: str = 'Отсутствует.'
     else:
@@ -253,30 +305,31 @@ def output_statistic(username: str, user_id: int) -> str:
             }
         }
         total_sum: float = 0
+        currency: str = database.select_user_currency(user_id=user_id)
 
         # Summ all values in categories.
         for operation in operations_list:
-            categories_values[operation[0]]['value'] += operation[1]
-            total_sum += operation[1]
+            categories_values[operation[1]]['value'] += operation[2]
+            total_sum += operation[2]
 
         message_text = f'Пользователь: @{username}\n' \
                        f'Ваши расходы по категориям.\n' \
                        f'📅 Период: {reporting_period}\n\n' \
-                       f'{categories_values["products"]["title"]}: {categories_values["products"]["value"]} ₽\n' \
-                       f'{categories_values["cafes"]["title"]}: {categories_values["cafes"]["value"]} ₽\n' \
-                       f'{categories_values["auto"]["title"]}: {categories_values["auto"]["value"]} ₽\n' \
-                       f'{categories_values["transport"]["title"]}: {categories_values["transport"]["value"]} ₽\n' \
-                       f'{categories_values["home"]["title"]}: {categories_values["home"]["value"]} ₽\n' \
-                       f'{categories_values["entertainment"]["title"]}: {categories_values["entertainment"]["value"]} ₽\n' \
-                       f'{categories_values["sport"]["title"]}: {categories_values["sport"]["value"]} ₽\n' \
-                       f'{categories_values["health"]["title"]}: {categories_values["health"]["value"]} ₽\n' \
-                       f'{categories_values["education"]["title"]}: {categories_values["education"]["value"]} ₽\n' \
-                       f'{categories_values["gifts"]["title"]}: {categories_values["gifts"]["value"]} ₽\n' \
-                       f'{categories_values["beauty"]["title"]}: {categories_values["beauty"]["value"]} ₽\n' \
-                       f'{categories_values["clothes"]["title"]}: {categories_values["clothes"]["value"]} ₽\n' \
-                       f'{categories_values["technic"]["title"]}: {categories_values["technic"]["value"]} ₽\n' \
-                       f'{categories_values["subscriptions"]["title"]}: {categories_values["subscriptions"]["value"]} ₽\n\n' \
-                       f'Всего потрачено: {total_sum} ₽'
+                       f'{categories_values["products"]["title"]}: {categories_values["products"]["value"]} {currency}\n' \
+                       f'{categories_values["cafes"]["title"]}: {categories_values["cafes"]["value"]} {currency}\n' \
+                       f'{categories_values["auto"]["title"]}: {categories_values["auto"]["value"]} {currency}\n' \
+                       f'{categories_values["transport"]["title"]}: {categories_values["transport"]["value"]} {currency}\n' \
+                       f'{categories_values["home"]["title"]}: {categories_values["home"]["value"]} {currency}\n' \
+                       f'{categories_values["entertainment"]["title"]}: {categories_values["entertainment"]["value"]} {currency}\n' \
+                       f'{categories_values["sport"]["title"]}: {categories_values["sport"]["value"]} {currency}\n' \
+                       f'{categories_values["health"]["title"]}: {categories_values["health"]["value"]} {currency}\n' \
+                       f'{categories_values["education"]["title"]}: {categories_values["education"]["value"]} {currency}\n' \
+                       f'{categories_values["gifts"]["title"]}: {categories_values["gifts"]["value"]} {currency}\n' \
+                       f'{categories_values["beauty"]["title"]}: {categories_values["beauty"]["value"]} {currency}\n' \
+                       f'{categories_values["clothes"]["title"]}: {categories_values["clothes"]["value"]} {currency}\n' \
+                       f'{categories_values["technic"]["title"]}: {categories_values["technic"]["value"]} {currency}\n' \
+                       f'{categories_values["subscriptions"]["title"]}: {categories_values["subscriptions"]["value"]} {currency}\n\n' \
+                       f'Всего потрачено: {total_sum} {currency}'
 
         return message_text
 
@@ -292,5 +345,5 @@ settings_lines: dict = {
 }
 
 other_lines: dict = {
-    'text_back_menu': 'Возвращаюсь в главное меню.'
+    'text_back_menu': 'Возвращаюсь в главное меню.',
 }

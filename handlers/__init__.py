@@ -11,6 +11,11 @@ dispatcher.include_routers(
     start.router
 )
 
+from handlers.set_currency import currency
+dispatcher.include_routers(
+    currency.router
+)
+
 from handlers.last_operations import delete_last_operation, last_operations_command
 dispatcher.include_routers(
     delete_last_operation.router,
@@ -34,10 +39,11 @@ dispatcher.include_routers(
     profile_command_handler.router
 )
 
-from handlers.settings import delete_all_operations, settings_command
+from handlers.settings import delete_all_operations, settings_command, change_currency_command
 dispatcher.include_routers(
     delete_all_operations.router,
-    settings_command.router
+    settings_command.router,
+    change_currency_command.router
 )
 
 def fetch_user_id(obj: pydantic.main.ModelMetaclass) -> int:

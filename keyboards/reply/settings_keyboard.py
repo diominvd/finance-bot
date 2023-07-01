@@ -8,6 +8,9 @@ def create_settings_keyboard() -> ReplyKeyboardMarkup:
             KeyboardButton(text=keyboards_lines['settings_keyboard']['clear_all_operations'])
         ],
         [
+            KeyboardButton(text=keyboards_lines['settings_keyboard']['change_currency'])
+        ],
+        [
             KeyboardButton(text=keyboards_lines['settings_keyboard']['menu'])
         ]
     ]

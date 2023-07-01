@@ -9,6 +9,7 @@ cursor = connection.cursor()
 # Database -> users.
 cursor.execute('''CREATE TABLE IF NOT EXISTS users(
     user_id INT PRIMARY KEY UNIQUE,
+    currency TEXT,
     products FLOAT,
     cafes FLOAT,
     auto FLOAT,
@@ -30,6 +31,7 @@ connection.commit()
 cursor.execute('''CREATE TABLE IF NOT EXISTS operations(
     operation_id INT PRIMARY KEY AUTO_INCREMENT UNIQUE,
     user_id INT,
+    currency TEXT,
     category TEXT,
     value FLOAT,
     date TEXT);''')

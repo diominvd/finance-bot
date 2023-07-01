@@ -1,5 +1,9 @@
 from aiogram.fsm.state import StatesGroup, State
 
+
+class ChooseCurrencyStates(StatesGroup):
+    get_currency = State()
+
 class NewOperationStates(StatesGroup):
     get_operation_category = State()
     get_operation_value = State()
@@ -16,3 +20,4 @@ class MarketStates(StatesGroup):
 class SettingsStates(StatesGroup):
     get_option = State()
     get_ticker_for_delete = State()
+    get_currency_for_change = State()
