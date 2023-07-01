@@ -8,7 +8,7 @@ keyboards/__pycache__
 lines/__pycache__
 src
 venv
-token.txt
+secrets.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
