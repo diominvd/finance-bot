@@ -4,9 +4,10 @@ import pydantic.main
 from config import dispatcher
 
 
-from handlers.commands import help, start
+from handlers.commands import help, info, start
 dispatcher.include_routers(
     help.router,
+    info.router,
     start.router
 )
 

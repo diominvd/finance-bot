@@ -1,6 +1,7 @@
 import pydantic.main
 import datetime
 
+import config
 from config import bot_storage
 from data import database
 
@@ -121,6 +122,10 @@ commands_lines: dict = {
                           'Вы можете классифицировать все операции по категориям, '
                           'просматривать последние операции и формировать отчёт за определённый период.\n\n'
                           'Для получения дополнительной информации напишите команду "/help."',
+    'text_info_command': f'<b>Finance Bot v{config.version}</b>.\n'
+                         f'Исходный код проекта на Git Hub: clck.ru/34qJYm\n'
+                         f'Официальная группа: @diominvdev\n'
+                         f'Developer: @diominvd',
 }
 
 
