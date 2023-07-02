@@ -10,7 +10,7 @@ import keyboards
 from keyboards import menu_kb, categories_kb
 import lines
 from lines import new_operation_lines
-from states import LastOperationsStates, NewOperationStates
+from states import NewOperationStates
 
 
 router = Router(name=__name__)

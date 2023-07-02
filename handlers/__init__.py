@@ -6,18 +6,14 @@ from config import dispatcher
 from handlers import commands
 from handlers import lastoperations
 from handlers import newoperation
+from handlers import other
 
 
 dispatcher.include_routers(
     commands.router,
     lastoperations.router,
-    newoperation.router
-)
-
-from handlers.other import menu
-
-dispatcher.include_routers(
-    menu.router
+    newoperation.router,
+    other.router
 )
 
 from handlers.profile import profile_command_handler
