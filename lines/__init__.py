@@ -5,30 +5,31 @@ import config
 from config import bot_storage
 from data import database
 
+
 keyboards_lines: dict = {
     'currencies_keyboard': {
         'RUB': {
-            'title': 'RUB (₽)',
+            'title': '🇷🇺 | RUB (₽)',
             'callback_data': 'currency_₽'
         },
         'BYN': {
-            'title': 'BYN (Br)',
+            'title': '🇧🇾 | BYN (Br)',
             'callback_data': 'currency_Br'
         },
         'UAH': {
-            'title': 'UAH (₴)',
+            'title': '🇺🇦 | UAH (₴)',
             'callback_data': 'currency_₴'
         },
         'KZT': {
-            'title': 'KZT (₸)',
+            'title': '🇰🇿 | KZT (₸)',
             'callback_data': 'currency_₸'
         },
         'USD': {
-            'title': 'USD ($)',
+            'title': '🇺🇸 | USD ($)',
             'callback_data': 'currency_$'
         },
         'EUR': {
-            'title': 'EUR (€)',
+            'title': '🇪🇺 | EUR (€)',
             'callback_data': 'currency_€'
         },
         'cancel': {
@@ -38,59 +39,59 @@ keyboards_lines: dict = {
     },
     'categories_keyboard': {
         'products': {
-            'title': 'Продукты',
+            'title': '🍞 | Продукты',
             'callback_data': 'category_products'
         },
         'cafes': {
-            'title': 'Кафе',
-            'callback_data': 'category_cafe'
+            'title': '🍔 | Кафе',
+            'callback_data': 'category_cafes'
         },
         'auto': {
-            'title': 'Автомобиль',
+            'title': '🚘 | Автомобиль',
             'callback_data': 'category_auto'
         },
         'transport': {
-            'title': 'Транспорт',
+            'title': '🚃 | Транспорт',
             'callback_data': 'category_transport'
         },
         'home': {
-            'title': 'Дом',
+            'title': '🏡 | Дом',
             'callback_data': 'category_home'
         },
         'entertainment': {
-            'title': 'Развлечения',
+            'title': '🎡 | Развлечения',
             'callback_data': 'category_entertainment'
         },
         'sport': {
-            'title': 'Спорт',
+            'title': '🏓 | Спорт',
             'callback_data': 'category_sport'
         },
         'health': {
-            'title': 'Здоровье',
+            'title': '💊 | Здоровье',
             'callback_data': 'category_health'
         },
         'education': {
-            'title': 'Образование',
+            'title': '📚 | Образование',
             'callback_data': 'category_education'
         },
         'gifts': {
-            'title': 'Подарки',
+            'title': '🎁 | Подарки',
             'callback_data': 'category_gifts'
         },
         'beauty': {
-            'title': 'Красота',
+            'title': '💄 | Красота',
             'callback_data': 'category_beauty'
         },
         'clothes': {
-            'title': 'Одежда',
+            'title': '👕 | Одежда',
             'callback_data': 'category_clothes'
         },
         'technic': {
-            'title': 'Техника',
+            'title': '🖥 | Техника',
             'callback_data': 'category_technic'
         },
         'subscriptions': {
-            'title': 'Подписки',
+            'title': '📲 | Подписки',
             'callback_data': 'category_subscriptions'
         },
         'menu': {
@@ -109,33 +110,33 @@ keyboards_lines: dict = {
         }
     },
     'menu_keyboard': {
-        'add_operation': 'Добавить операцию',
-        'last_operations': 'Последние операции',
-        'profile': 'Профиль',
-        'settings': 'Настройки'
+        'add_operation': '➕ | Добавить операцию',
+        'last_operations': '🕔 | Последние операции',
+        'profile': '👤 | Профиль',
+        'settings': '⚙️ | Настройки'
     },
     'settings_keyboard': {
-        'clear_all_operations': 'Очистить список операций',
-        'change_currency': 'Изменить валюту',
-        'menu': 'Главное меню'
+        'clear_all_operations': '🗑 | Очистить список операций',
+        'change_currency': '💱 | Изменить валюту',
+        'menu': '🏠 | Главное меню'
     },
 }
 
 categories: dict = {
-    'products': 'Продукты',
-    'cafes': 'Кафе',
-    'auto': 'Автомобиль',
-    'transport': 'Транспорт',
-    'home': 'Дом',
-    'entertainment': 'Развлечения',
-    'sport': 'Спорт',
-    'health': 'Здоровье',
-    'education': 'Образование',
-    'gifts': 'Подарки',
-    'beauty': 'Красота',
-    'clothes': 'Одежда',
-    'technic': 'Техника',
-    'subscriptions': 'Подписки'
+    'products': 'Продукты 🍞',
+    'cafes': 'Кафе 🍔',
+    'auto': 'Автомобиль 🚘',
+    'transport': 'Транспорт 🚃',
+    'home': 'Дом 🏡',
+    'entertainment': 'Развлечения 🎡',
+    'sport': 'Спорт 🏓',
+    'health': 'Здоровье 💊',
+    'education': 'Образование 📚',
+    'gifts': 'Подарки 🎁',
+    'beauty': 'Красота 💄',
+    'clothes': 'Одежда 👕',
+    'technic': 'Техника 🖥',
+    'subscriptions': 'Подписки 📲'
 }
 
 commands_lines: dict = {
@@ -180,7 +181,7 @@ currency_lines: dict = {
 
 
 def last_operations(user_id: int) -> str:
-    operations_list: list = database.select_operations_from_database_operations(user_id=user_id, limit=5)
+    operations_list: list = database.select_operations(user_id=user_id, limit=5)
     message_text: str = f'Последние операции:\n'
 
     for operation in operations_list:
@@ -212,7 +213,7 @@ def def_text_operation_complete(user_id: int) -> str:
     currency: str = database.select_user_currency(user_id=user_id)
     return f'📌 Операция успешно добавлена.\n' \
            f'Категория: {categories[bot_storage[user_id]["category"]]}\n' \
-           f'Сумма: {bot_storage[user_id]["value"]} {currency}\n' \
+           f'Сумма: {bot_storage[user_id]["value"]} {bot_storage[user_id]["currency"]}\n' \
            f'Дата создания: {bot_storage[user_id]["date"]}\n\n'
 
 
@@ -236,7 +237,7 @@ def current_date_formation() -> str:
 
 
 def output_statistic(username: str, user_id: int) -> str:
-    operations_list: list = database.select_operations_from_database_operations(user_id=user_id)
+    operations_list: list = database.select_operations(user_id=user_id)
     current_date: str = current_date_formation()
 
     try:
@@ -305,7 +306,7 @@ def output_statistic(username: str, user_id: int) -> str:
             }
         }
         total_sum: float = 0
-        currency: str = database.select_user_currency(user_id=user_id)
+        currency: str = database.select_user_currency(user_id)
 
         # Summ all values in categories.
         for operation in operations_list:

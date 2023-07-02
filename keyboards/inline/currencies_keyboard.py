@@ -25,7 +25,7 @@ def create_currencies_keyboard(state: State = None) -> InlineKeyboardMarkup:
         ],
     ]
 
-    if state == SettingsStates.get_option:
+    if state == SettingsStates.get_mode:
         keyboard_buttons.append([
             InlineKeyboardButton(text=keyboards_lines['currencies_keyboard']['cancel']['title'],
                                  callback_data=keyboards_lines['currencies_keyboard']['cancel']['callback_data'])

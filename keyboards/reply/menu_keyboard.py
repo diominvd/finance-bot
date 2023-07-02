@@ -5,7 +5,9 @@ from lines import keyboards_lines
 def create_menu_keyboard() -> ReplyKeyboardMarkup:
     keyboard_buttons = [
         [
-            KeyboardButton(text=keyboards_lines['menu_keyboard']['add_operation']),
+            KeyboardButton(text=keyboards_lines['menu_keyboard']['add_operation'])
+        ],
+        [
             KeyboardButton(text=keyboards_lines['menu_keyboard']['last_operations'])
         ],
         [

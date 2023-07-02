@@ -2,7 +2,7 @@ from config import bot_storage
 from data import database
 
 
-def insert_operation_into_bot_storage(user_id: int) -> None:
+def create_operation(user_id: int) -> None:
     try:
         bot_storage[user_id] = {
             'currency': database.select_user_currency(user_id=user_id),
@@ -16,7 +16,7 @@ def insert_operation_into_bot_storage(user_id: int) -> None:
         print(f'> storage -> {user_id} -> new_operation: success.')
 
 
-def update_operation_data_in_bot_storage(user_id: int, field: str, value) -> None:
+def update_operation_data(user_id: int, field: str, value) -> None:
     try:
         bot_storage[user_id][field] = value
     except:
@@ -25,5 +25,5 @@ def update_operation_data_in_bot_storage(user_id: int, field: str, value) -> Non
         print(f'> storage -> {user_id} -> update operation field={field}, value={value}: success.')
 
 
-def remove_operation_from_bot_storage(user_id: int) -> None:
+def remove_operation(user_id: int) -> None:
     bot_storage.pop(user_id, None)
