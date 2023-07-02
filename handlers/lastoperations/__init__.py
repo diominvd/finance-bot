@@ -1,18 +1,14 @@
 from aiogram import Router
 from aiogram.types import Message, CallbackQuery
-from aiogram.filters import Command, Text
+from aiogram.filters import Text
 from aiogram.fsm.context import FSMContext
 
 from config import bot
 from data import database
 from handlers import utils as u
-
 import keyboards
 from keyboards import menu_kb, last_operations_kb
-from keyboards.inline import currencies_keyboard
-
 from lines import last_operations_lines
-
 from states import LastOperationsStates
 
 
@@ -43,11 +39,15 @@ async def func_last_operations_h(message: Message, state: FSMContext) -> None:
                              reply_markup=menu_kb)
 
 
-@u.remove_callback_delay
+"2. Handler: handle callback (delete last operation or back to menu)."
 @router.callback_query(LastOperationsStates.get_callback, Text('delete_last'))
-async def cb_last_operations_h(callback_query: CallbackQuery, state: FSMContext, bot=bot) -> None:
+@u.remove_callback_delay
+async def cb_delete_last_operation_h(callback_query: CallbackQuery, state: FSMContext, bot=bot) -> None:
+    # Delete last operation from database.
+    database.delete_last_operation(user_id=u.fetch_user_id(callback_query))
+
     # Checking that the user has operations.
-    if database.operations_existence_check(database.select_operations(user_id=u.fetch_user_id(callback_query))):
+    if database.operations_existence_check(user_id=u.fetch_user_id(callback_query)):
         await bot.edit_message_text(text=last_operations_lines['def_text_last_operations'](user_id=u.fetch_user_id(callback_query)),
                                     chat_id=u.fetch_chat_id(callback_query),
                                     message_id=u.fetch_message_id(callback_query),

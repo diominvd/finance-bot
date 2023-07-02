@@ -212,7 +212,7 @@ def def_text_operation_complete(user_id: int) -> str:
     currency: str = database.select_user_currency(user_id=user_id)
     return f'📌 Операция успешно добавлена.\n' \
            f'Категория: {categories[bot_storage[user_id]["category"]]}\n' \
-           f'Сумма: {bot_storage[user_id]["value"]} {currency}\n' \
+           f'Сумма: {bot_storage[user_id]["value"]} {bot_storage[user_id]["currency"]}\n' \
            f'Дата создания: {bot_storage[user_id]["date"]}\n\n'
 
 

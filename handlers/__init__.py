@@ -5,19 +5,13 @@ from config import dispatcher
 
 from handlers import commands
 from handlers import lastoperations
+from handlers import newoperation
 
 
 dispatcher.include_routers(
     commands.router,
-    lastoperations.router
-)
-
-from handlers.new_operation import add_operation_command, operation_category, operation_value
-
-dispatcher.include_routers(
-    add_operation_command.router,
-    operation_category.router,
-    operation_value.router
+    lastoperations.router,
+    newoperation.router
 )
 
 from handlers.other import menu
