@@ -1,7 +1,7 @@
 from aiogram.fsm.state import StatesGroup, State
 
 
-class ChooseCurrencyStates(StatesGroup):
+class StartStates(StatesGroup):
     get_currency = State()
 
 class NewOperationStates(StatesGroup):
