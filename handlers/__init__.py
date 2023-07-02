@@ -7,19 +7,15 @@ from handlers import commands
 from handlers import lastoperations
 from handlers import newoperation
 from handlers import other
+from handlers import profile
 
 
 dispatcher.include_routers(
     commands.router,
     lastoperations.router,
     newoperation.router,
-    other.router
-)
-
-from handlers.profile import profile_command_handler
-
-dispatcher.include_routers(
-    profile_command_handler.router
+    other.router,
+    profile.router
 )
 
 from handlers.settings import delete_all_operations, settings_command, change_currency_command

@@ -18,6 +18,6 @@ class MarketStates(StatesGroup):
     get_ticker_for_delete = State()
 
 class SettingsStates(StatesGroup):
-    get_option = State()
+    get_mode = State()
     get_ticker_for_delete = State()
     get_currency_for_change = State()
