@@ -29,7 +29,7 @@ async def operation_value_handler(message: Message, state: FSMContext, bot=confi
                                                          value=operation_value)
 
             # Insert operation data into database.
-            database.insert_operation_into_database_operations(user_id=handlers.fetch_user_id(obj=message))
+            database.add_operation(user_id=handlers.fetch_user_id(obj=message))
 
             # Edit message with value query.
             await bot.edit_message_text(text=lines.new_operation_lines['def_text_value_inputted'](user_id=handlers.fetch_user_id(obj=message), value=message.text),

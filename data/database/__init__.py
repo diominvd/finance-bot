@@ -2,7 +2,7 @@ from config import bot_storage
 from data import connection, cursor
 
 
-def insert_new_user_into_database_users(user_id: int, currency: str) -> None:
+def create_user(user_id: int, currency: str) -> None:
     try:
         cursor.execute(f'INSERT INTO users VALUES (%s, %s, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)',
                        (user_id, currency))
@@ -13,7 +13,7 @@ def insert_new_user_into_database_users(user_id: int, currency: str) -> None:
         print(f'> insert user {user_id} into database/users: success.')
 
 
-def check_user_in_database(user_id: int) -> bool:
+def user_existence_check(user_id: int) -> bool:
     cursor.execute(f'SELECT user_id FROM users WHERE user_id = %s', (user_id, ))
 
     if len(cursor.fetchall()) == 0:
@@ -22,7 +22,7 @@ def check_user_in_database(user_id: int) -> bool:
         return True
 
 
-def insert_operation_into_database_operations(user_id: int) -> None:
+def add_operation(user_id: int) -> None:
     # Fetch operation data from boot storage.
     currency: str = bot_storage[user_id]['currency']
     category: str = bot_storage[user_id]['category']
@@ -46,7 +46,7 @@ def insert_operation_into_database_operations(user_id: int) -> None:
         print(f'> storage -> {user_id} -> operation data -> database: success.')
 
 
-def select_operations_from_database_operations(user_id: int, limit: int = 999999) -> list:
+def select_operations(user_id: int, limit: int = 999999) -> list:
     # Fetch all operations from database/operations.
     cursor.execute(f'SELECT currency, category, value, date FROM operations WHERE user_id = %s ORDER BY operation_id DESC LIMIT %s',
                    (user_id, limit))
@@ -55,6 +55,13 @@ def select_operations_from_database_operations(user_id: int, limit: int = 999999
     operations_list: list = list(reversed(cursor.fetchall()))
 
     return operations_list
+
+
+def operations_existence_check(user_id: int) -> bool:
+    if len(select_operations(user_id)) == 0:
+        return False
+    else:
+        return True
 
 
 def select_user_currency(user_id: int) -> str:
@@ -67,7 +74,7 @@ def update_user_currency(user_id: int, currency: str) -> None:
     connection.commit()
 
 
-def delete_last_operation_from_database(user_id: int) -> list:
+def delete_last_operation(user_id: int) -> list:
     # Fetch operation category and value for update database/users.
     cursor.execute(f'SELECT category, value FROM operations WHERE user_id =%s ORDER BY operation_id DESC LIMIT 1',
                    (user_id,))
@@ -88,12 +95,12 @@ def delete_last_operation_from_database(user_id: int) -> list:
     connection.commit()
 
     # Last operations: list with refreshed operations list.
-    last_operations: list = select_operations_from_database_operations(user_id=user_id, limit=5)
+    last_operations: list = select_operations(user_id=user_id, limit=5)
 
     return last_operations
 
 
-def delete_all_user_operations_from_database(user_id: int) -> None:
+def delete_all_operations(user_id: int) -> None:
     # Delete all operations from database/operations.
     cursor.execute(f'DELETE FROM operations WHERE user_id = %s', (user_id, ))
     connection.commit()

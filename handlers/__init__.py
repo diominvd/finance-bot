@@ -4,16 +4,12 @@ import pydantic.main
 from config import dispatcher
 
 from handlers import commands
+from handlers import lastoperations
+
 
 dispatcher.include_routers(
-    commands.router
-)
-
-from handlers.last_operations import delete_last_operation, last_operations_command
-
-dispatcher.include_routers(
-    delete_last_operation.router,
-    last_operations_command.router
+    commands.router,
+    lastoperations.router
 )
 
 from handlers.new_operation import add_operation_command, operation_category, operation_value

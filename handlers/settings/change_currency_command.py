@@ -31,7 +31,7 @@ async def new_currency_handler(callback_query: CallbackQuery, state: FSMContext,
     # Fetch currency from callback.
     new_currency: str = callback_query.data.split('_')[1]
 
-    database.delete_all_user_operations_from_database(user_id=handlers.fetch_user_id(obj=callback_query))
+    database.delete_all_operations(user_id=handlers.fetch_user_id(obj=callback_query))
 
     database.update_user_currency(user_id=handlers.fetch_user_id(obj=callback_query), currency=new_currency)
 

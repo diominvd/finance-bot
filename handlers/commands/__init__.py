@@ -1,11 +1,10 @@
-from aiogram import Router, F
+from aiogram import Router
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command, Text
 from aiogram.fsm.context import FSMContext
 
 from config import bot
 from data import database
-import handlers as h
 from handlers import utils as u
 
 from keyboards import menu_kb
@@ -16,17 +15,19 @@ from lines import commands_lines, currency_lines
 from states import StartStates
 
 
-router = Router(name='Commands-Handler')
+router = Router(name=__name__)
 """
-    'cmnd' in def names = command.
-    'h' in def names = handler.
+    File Documentation:
+        'cmnd' in def names = command.
+        'h' in def names = handler.
 """
+
 
 "2. Handler: handle command /start -> check presence of a user in database."
 @router.message(Command('start'))
 async def cmnd_start_h(message: Message, state: FSMContext) -> None:
     # Checking the presence of a user in the database.
-    if database.check_user_in_database(user_id=u.fetch_user_id(obj=message)):
+    if database.user_existence_check(user_id=u.fetch_user_id(obj=message)):
         # If True: Offer to choose a currency.
         await message.answer(text=commands_lines['text_start_command'],
                              reply_markup=menu_kb)
@@ -48,8 +49,8 @@ async def currency_h(callback_query: CallbackQuery, state: FSMContext, bot=bot):
     chat_id: int = u.fetch_chat_id(callback_query)
 
     # Create user in database.
-    database.insert_new_user_into_database_users(user_id=u.fetch_user_id(obj=callback_query),
-                                                 currency=currency)
+    database.create_user(user_id=u.fetch_user_id(callback_query),
+                         currency=currency)
 
     # Deleting a currency selection message.
     await bot.delete_message(chat_id=chat_id,

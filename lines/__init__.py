@@ -180,7 +180,7 @@ currency_lines: dict = {
 
 
 def last_operations(user_id: int) -> str:
-    operations_list: list = database.select_operations_from_database_operations(user_id=user_id, limit=5)
+    operations_list: list = database.select_operations(user_id=user_id, limit=5)
     message_text: str = f'Последние операции:\n'
 
     for operation in operations_list:
@@ -236,7 +236,7 @@ def current_date_formation() -> str:
 
 
 def output_statistic(username: str, user_id: int) -> str:
-    operations_list: list = database.select_operations_from_database_operations(user_id=user_id)
+    operations_list: list = database.select_operations(user_id=user_id)
     current_date: str = current_date_formation()
 
     try:
