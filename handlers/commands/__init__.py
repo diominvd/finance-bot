@@ -11,7 +11,6 @@ from keyboards.inline import currencies_keyboard
 from lines import commands_lines, currency_lines
 from states import StartStates
 
-
 router = Router(name=__name__)
 """
     File Documentation:
@@ -24,7 +23,7 @@ router = Router(name=__name__)
 @router.message(Command('start'))
 async def cmnd_start_h(message: Message, state: FSMContext) -> None:
     # Checking the presence of a user in the database.
-    if database.user_existence_check(user_id=u.fetch_user_id(obj=message)):
+    if database.user_existence_check(user_id=u.fetch_user_id(message)):
         # If True: Offer to choose a currency.
         await message.answer(text=commands_lines['text_start_command'],
                              reply_markup=menu_kb)
@@ -78,5 +77,3 @@ async def cmnd_help_h(message: Message) -> None:
 async def cmnd_info_h(message: Message) -> None:
     # Sending message with info.
     await message.answer(text=commands_lines['text_info_command'])
-
-

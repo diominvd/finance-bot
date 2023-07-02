@@ -8,7 +8,7 @@ from data import database
 from handlers import utils as u
 import keyboards
 from keyboards import menu_kb, last_operations_kb
-from lines import last_operations_lines
+from lines import keyboards_lines, last_operations_lines
 from states import LastOperationsStates
 
 
@@ -22,7 +22,7 @@ router = Router(name=__name__)
 
 
 "1. Handler: handle command for look last operations."
-@router.message(Text('Последние операции'))
+@router.message(Text(keyboards_lines['menu_keyboard']['last_operations']))
 async def func_last_operations_h(message: Message, state: FSMContext) -> None:
     # Checking that the user has operations.
     if database.operations_existence_check(user_id=u.fetch_user_id(message)):

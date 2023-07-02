@@ -9,7 +9,7 @@ from handlers import utils as u
 import keyboards
 from keyboards import settings_kb
 from keyboards.inline import currencies_keyboard
-from lines import currency_lines, settings_lines
+from lines import keyboards_lines, currency_lines, settings_lines
 from states import SettingsStates
 
 
@@ -23,7 +23,7 @@ router = Router(name=__name__)
 
 
 "1. Handler: get command and go to settings State."
-@router.message(Text('Настройки'))
+@router.message(Text(keyboards_lines['menu_keyboard']['settings']))
 async def func_settings_h(message: Message, state: FSMContext) -> None:
     await message.answer(text=settings_lines['text_settings'],
                          reply_markup=settings_kb)
@@ -33,7 +33,7 @@ async def func_settings_h(message: Message, state: FSMContext) -> None:
 
 
 "2. Handler: get command for change currency."
-@router.message(SettingsStates.get_mode, Text('Изменить валюту'))
+@router.message(SettingsStates.get_mode, Text(keyboards_lines['settings_keyboard']['change_currency']))
 async def func_change_currency_h(message: Message, state: FSMContext) -> None:
     # Send message with currencies keyboard.
     await message.answer(text=currency_lines['warning_text_change_currency'],
@@ -85,7 +85,7 @@ async def func_new_currency_cb_h(callback_query: CallbackQuery, state: FSMContex
 
 
 "3. Handler: get command for clear all operations."
-@router.message(SettingsStates.get_mode, Text('Очистить список операций'))
+@router.message(SettingsStates.get_mode, Text(keyboards_lines['settings_keyboard']['clear_all_operations']))
 async def delete_all_operations_handler(message: Message, state: FSMContext):
     # # Checking that the user has operations.
     if database.select_operations(user_id=u.fetch_user_id(message)):

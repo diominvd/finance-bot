@@ -9,7 +9,7 @@ from handlers import utils as u
 import keyboards
 from keyboards import menu_kb, categories_kb
 import lines
-from lines import new_operation_lines
+from lines import keyboards_lines, new_operation_lines
 from states import NewOperationStates
 
 
@@ -23,7 +23,7 @@ router = Router(name=__name__)
 
 
 "1. Handler: handle command for add new operation."
-@router.message(Text('Добавить операцию'))
+@router.message(Text(keyboards_lines['menu_keyboard']['add_operation']))
 async def func_add_operation_h(message: Message, state: FSMContext) -> None:
     # Remove menu reply keyboard.
     await keyboards.delete_reply_keyboard(message)
