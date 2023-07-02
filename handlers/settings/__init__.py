@@ -22,7 +22,7 @@ router = Router(name=__name__)
 """
 
 
-"1. Handler:"
+"1. Handler: get command and go to settings State."
 @router.message(Text('Настройки'))
 async def func_settings_h(message: Message, state: FSMContext) -> None:
     await message.answer(text=settings_lines['text_settings'],
@@ -32,7 +32,7 @@ async def func_settings_h(message: Message, state: FSMContext) -> None:
     await state.set_state(SettingsStates.get_mode)
 
 
-"2. Handler:"
+"2. Handler: get command for change currency."
 @router.message(SettingsStates.get_mode, Text('Изменить валюту'))
 async def func_change_currency_h(message: Message, state: FSMContext) -> None:
     # Send message with currencies keyboard.
@@ -43,7 +43,7 @@ async def func_change_currency_h(message: Message, state: FSMContext) -> None:
     await state.set_state(SettingsStates.get_currency_for_change)
 
 
-"2.1. Handler:"
+"2.1. Handler: get cancel callback an back to settings."
 @router.callback_query(SettingsStates.get_currency_for_change, Text(startswith='cancel'))
 @u.remove_callback_delay
 async def func_change_currency_cancel_h(callback_query: CallbackQuery, state: FSMContext, bot=config.bot) -> None:
@@ -61,7 +61,7 @@ async def func_change_currency_cancel_h(callback_query: CallbackQuery, state: FS
     await state.set_state(SettingsStates.get_mode)
 
 
-"2.2. Handler:"
+"2.2. Handler: get new currency from callback."
 @router.callback_query(SettingsStates.get_currency_for_change, Text(startswith='currency_'))
 @u.remove_callback_delay
 async def func_new_currency_cb_h(callback_query: CallbackQuery, state: FSMContext, bot=config.bot) -> None:
@@ -84,7 +84,7 @@ async def func_new_currency_cb_h(callback_query: CallbackQuery, state: FSMContex
     await state.set_state(SettingsStates.get_mode)
 
 
-"3. Handler:"
+"3. Handler: get command for clear all operations."
 @router.message(SettingsStates.get_mode, Text('Очистить список операций'))
 async def delete_all_operations_handler(message: Message, state: FSMContext):
     # # Checking that the user has operations.
