@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import time
 
 from config import bot, dispatcher
 import handlers
@@ -14,4 +15,9 @@ logging.basicConfig(level=logging.INFO)
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    while True:
+        try:
+            asyncio.run(main())
+        except Exception as e:
+            time.sleep(3)
+            print(e)
