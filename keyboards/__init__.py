@@ -13,11 +13,3 @@ last_operations_kb: InlineKeyboardMarkup = last_operations_keyboard.create_last_
 
 menu_kb: ReplyKeyboardMarkup = menu_keyboard.create_menu_keyboard()
 settings_kb: ReplyKeyboardMarkup = settings_keyboard.create_settings_keyboard()
-
-
-async def delete_reply_keyboard(message: Message, bot=config.bot) -> None:
-    await message.answer(text='Загрузка...',
-                         reply_markup=ReplyKeyboardRemove())
-
-    await bot.delete_message(chat_id=message.chat.id,
-                             message_id=message.message_id + 1)

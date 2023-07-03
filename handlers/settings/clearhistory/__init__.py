@@ -4,7 +4,7 @@ from aiogram.filters import Text
 from aiogram.fsm.context import FSMContext
 
 from data import database
-from handlers import utils as u
+import utils as u
 from keyboards import settings_kb
 from lines import keyboards_lines, settings_lines
 from states import SettingsStates

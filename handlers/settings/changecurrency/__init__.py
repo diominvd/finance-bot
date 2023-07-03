@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 
 import config
 from data import database
-from handlers import utils as u
+import utils as u
 from keyboards import settings_kb
 from keyboards.inline import currencies_keyboard
 from lines import keyboards_lines, currency_lines, settings_lines
@@ -18,6 +18,9 @@ router = Router(name=__name__)
 "1. Handler: get command for change currency."
 @router.message(SettingsStates.get_mode, Text(keyboards_lines['settings_keyboard']['change_currency']))
 async def func_change_currency_h(message: Message, state: FSMContext) -> None:
+    # Remove settings reply keyboard.
+    await u.remove_reply_keyboard(message)
+    
     # Send message with currencies keyboard.
     await message.answer(text=currency_lines['warning_text_change_currency'],
                          reply_markup=currencies_keyboard.create_currencies_keyboard(state=SettingsStates.get_mode))
