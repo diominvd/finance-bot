@@ -1,6 +1,7 @@
 import aiogram
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.fsm.state import State
+import config
 import data.database
 from pydantic.main import ModelMetaclass
 
@@ -33,3 +34,11 @@ def remove_callback_delay(func):
         await obj.answer()
         return await func(obj, state)
     return wrapper
+
+
+async def remove_reply_keyboard(message: Message, bot=config.bot) -> None:
+    await message.answer(text='Загрузка...',
+                         reply_markup=ReplyKeyboardRemove())
+
+    await bot.delete_message(chat_id=message.chat.id,
+                             message_id=message.message_id + 1)

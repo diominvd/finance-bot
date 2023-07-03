@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 
 from config import bot
 from data import database, storage
-from handlers import utils as u
+import utils as u
 import keyboards
 from keyboards import menu_kb, categories_kb
 import lines
@@ -26,7 +26,7 @@ router = Router(name=__name__)
 @router.message(Text(keyboards_lines['menu_keyboard']['add_operation']))
 async def func_add_operation_h(message: Message, state: FSMContext) -> None:
     # Remove menu reply keyboard.
-    await keyboards.delete_reply_keyboard(message)
+    await u.remove_reply_keyboard(message)
 
     # Create new operation in bot storage.
     storage.create_operation(user_id=u.fetch_user_id(message))
