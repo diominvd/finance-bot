@@ -5,8 +5,7 @@ from aiogram.fsm.context import FSMContext
 
 from config import bot
 from data import database
-from handlers import utils as u
-import keyboards
+import utils as u
 from keyboards import menu_kb, last_operations_kb
 from lines import keyboards_lines, last_operations_lines
 from states import LastOperationsStates
@@ -27,7 +26,7 @@ async def func_last_operations_h(message: Message, state: FSMContext) -> None:
     # Checking that the user has operations.
     if database.operations_existence_check(user_id=u.fetch_user_id(message)):
         # Remove menu reply keyboard.
-        await keyboards.delete_reply_keyboard(message)
+        await u.remove_reply_keyboard(message)
 
         await message.answer(text=last_operations_lines['def_text_last_operations'](user_id=u.fetch_user_id(message)),
                              reply_markup=last_operations_kb)

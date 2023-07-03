@@ -2,7 +2,7 @@ from aiogram import Router
 from aiogram.types import Message
 from aiogram.filters import Text
 
-from handlers import utils as u
+import utils as u
 from keyboards import menu_kb
 from lines import keyboards_lines, profile_lines
 

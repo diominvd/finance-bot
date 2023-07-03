@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 
 from config import bot
 from data import database
-from handlers import utils as u
+import utils as u
 from keyboards import menu_kb
 from keyboards.inline import currencies_keyboard
 from lines import commands_lines, currency_lines

@@ -5,7 +5,7 @@ import aiogram.types
 from aiogram.filters import Text
 
 import config
-from handlers import utils as u
+import utils as u
 from keyboards import menu_kb
 import lines
 from lines import keyboards_lines
