@@ -169,13 +169,19 @@ def change_currency(symbol: str) -> str:
            f'Список операций очищен.'
 
 
+def change_currency_error(symbol: str) -> str:
+    return f'Ошибка. Валюта "{symbol}" уже установленна.'
+
+
 currency_lines: dict = {
     'def_text_currency_chosen': currency,
+
+    'error_text_currency_already_set': change_currency_error,
 
     'text_choose_currency': 'Пожалуйста, выберите вашу валюту из списка ниже.',
     'text_currency_changed': change_currency,
 
-    'warning_text_change_currency': '❗️При изменении валюты список операций будет очищен. '
+    'warning_text_change_currency': 'При изменении валюты список операций будет очищен. '
                                     'Для изменения валюты выберите необходимую из списка ниже.'
 }
 

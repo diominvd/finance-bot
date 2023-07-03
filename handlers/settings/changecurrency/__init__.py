@@ -20,7 +20,7 @@ router = Router(name=__name__)
 async def func_change_currency_h(message: Message, state: FSMContext) -> None:
     # Remove settings reply keyboard.
     await u.remove_reply_keyboard(message)
-    
+
     # Send message with currencies keyboard.
     await message.answer(text=currency_lines['warning_text_change_currency'],
                          reply_markup=currencies_keyboard.create_currencies_keyboard(state=SettingsStates.get_mode))
@@ -51,20 +51,26 @@ async def func_change_currency_cancel_h(callback_query: CallbackQuery, state: FS
 @router.callback_query(SettingsStates.get_currency_for_change, Text(startswith='currency_'))
 @u.remove_callback_delay
 async def func_new_currency_cb_h(callback_query: CallbackQuery, state: FSMContext, bot=config.bot) -> None:
+    # Fetch current currency from database.
+    current_currency: str = database.select_user_currency(user_id=u.fetch_user_id(callback_query))
     # Fetch currency from callback.
     new_currency: str = callback_query.data.split('_')[1]
     chat_id: int = u.fetch_chat_id(callback_query)
 
-    database.delete_all_operations(user_id=u.fetch_user_id(callback_query))
-    database.update_user_currency(user_id=u.fetch_user_id(callback_query), currency=new_currency)
+    if new_currency == current_currency:
+        await bot.send_message(chat_id=chat_id,
+                               text=currency_lines['error_text_currency_already_set'](symbol=new_currency))
+    else:
+        database.delete_all_operations(user_id=u.fetch_user_id(callback_query))
+        database.update_user_currency(user_id=u.fetch_user_id(callback_query), currency=new_currency)
 
-    await bot.delete_message(chat_id=chat_id,
-                             message_id=u.fetch_message_id(callback_query))
+        await bot.delete_message(chat_id=chat_id,
+                                 message_id=u.fetch_message_id(callback_query))
 
-    # Send success message and back to settings.
-    await bot.send_message(chat_id=chat_id,
-                           text=currency_lines['text_currency_changed'](symbol=new_currency),
-                           reply_markup=settings_kb)
+        # Send success message and back to settings.
+        await bot.send_message(chat_id=chat_id,
+                               text=currency_lines['text_currency_changed'](symbol=new_currency),
+                               reply_markup=settings_kb)
 
-    # Set state -> SettingsStates.get_option.
-    await state.set_state(SettingsStates.get_mode)
+        # Set state -> SettingsStates.get_option.
+        await state.set_state(SettingsStates.get_mode)
