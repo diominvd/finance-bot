@@ -2,7 +2,6 @@ import aiogram
 from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.fsm.state import State
 import config
-import data.database
 from pydantic.main import ModelMetaclass
 
 

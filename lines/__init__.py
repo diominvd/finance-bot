@@ -1,10 +1,8 @@
-import pydantic.main
 import datetime
 
 import config
 from config import bot_storage
-from data import database
-
+import database
 
 keyboards_lines: dict = {
     'currencies_keyboard': {
