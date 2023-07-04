@@ -115,5 +115,8 @@ keyboards_lines: dict = {
 }
 
 menu_keyboard: dict = {
-    ''
+    'income': '📈 | Доход',
+    'expense': '📉 | Расход',
+    'profile': '👤 | Профиль',
+    'settings': '⚙️ | Настройки'
 }
