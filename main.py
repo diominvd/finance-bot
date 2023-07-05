@@ -4,7 +4,7 @@ import time
 
 from config import bot, dispatcher
 import handlers
-import  database
+import database
 
 
 async def main():

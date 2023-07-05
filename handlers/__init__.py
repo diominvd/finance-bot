@@ -1,7 +1,11 @@
 from config import dispatcher
-from handlers.commands import help, info, start
+from handlers import commands
+from handlers import firststart
+from handlers import income
 
 
 dispatcher.include_routers(
-    start.router
+    commands.router,
+    firststart.router,
+    income.router
 )
