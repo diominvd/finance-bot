@@ -13,11 +13,11 @@ from states import AddIncome
 import storage
 import utils as u
 
-
 router = Router(name=__name__)
 
-
 "Handler: fetch command to add income and send income categories."
+
+
 @router.message(Text(lines.keyboards_lines['menu_keyboard']['income']))
 async def operation_type_handler(message: Message, state: FSMContext, bot=config.bot) -> None:
     # Remove menu keyboard
@@ -35,6 +35,8 @@ async def operation_type_handler(message: Message, state: FSMContext, bot=config
 
 
 "Handler: fetch category from callback and add it in bot storage."
+
+
 @router.callback_query(AddIncome.set_income_category, Text(startswith='category_'))
 @u.remove_callback_delay
 async def income_category_handler(callback: CallbackQuery, state: FSMContext, bot=config.bot) -> None:
@@ -61,6 +63,8 @@ async def income_category_handler(callback: CallbackQuery, state: FSMContext, bo
 
 
 "Handler: fetch operation value and save operation in database."
+
+
 @router.message(AddIncome.set_income_value)
 async def income_value_handler(message: Message, state: FSMContext, bot=config.bot):
     user_id: int = u.fetch_user_id(message)
@@ -77,6 +81,15 @@ async def income_value_handler(message: Message, state: FSMContext, bot=config.b
 
             # Add operation in db
             database.add_operation(user_id, operation_type='income')
+
+            # Edit message with value query,
+            await bot.edit_message_text(text=lines.new_operation_lines['def_text_value_set'](user_id),
+                                        chat_id=u.fetch_chat_id(message),
+                                        message_id=u.fetch_message_id(message) - 1)
+
+            # Delete message with value from user.
+            await bot.delete_message(chat_id=u.fetch_chat_id(message),
+                                     message_id=u.fetch_message_id(message))
 
             await message.answer(text=lines.new_operation_lines['def_text_operation_complete'](user_id),
                                  reply_markup=menu_kb)

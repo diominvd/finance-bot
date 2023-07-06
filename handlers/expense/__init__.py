@@ -78,6 +78,15 @@ async def expense_value_handler(message: Message, state: FSMContext, bot=config.
             # Add operation in db
             database.add_operation(user_id, operation_type='expense')
 
+            # Edit message with value query,
+            await bot.edit_message_text(text=lines.new_operation_lines['def_text_value_set'](user_id),
+                                        chat_id=u.fetch_chat_id(message),
+                                        message_id=u.fetch_message_id(message) - 1)
+
+            # Delete message with value from user.
+            await bot.delete_message(chat_id=u.fetch_chat_id(message),
+                                     message_id=u.fetch_message_id(message))
+
             await message.answer(text=lines.new_operation_lines['def_text_operation_complete'](user_id),
                                  reply_markup=menu_kb)
 

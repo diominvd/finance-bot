@@ -1,6 +1,7 @@
 import config
 import emoji
 
+import database
 import storage
 from storage import bot_storage
 
@@ -48,6 +49,21 @@ keyboards_lines: dict = {
             'callback_data': 'currency_EUR',
             'text': '€'
         }
+    },
+    'profile_keyboard': {
+        'last_operations': '🕐 | Последние операции',
+        'statistic': '📊 | Статистика',
+        'main_menu': '🏠 | Главное меню'
+    },
+    'last_operations_keyboard': {
+        'delete_last': {
+            'title': 'Удалить последнюю операцию',
+            'callback_data': 'delete_last'
+        },
+        'cancel': {
+            'title': 'Отмена',
+            'callback_data': 'cancel'
+        }
     }
 }
 
@@ -92,6 +108,10 @@ def category_set(user_id: int) -> str:
     return f'Выбрана категория: {bot_storage[user_id]["category"]} {bot_storage[user_id]["emoji"]}.'
 
 
+def value_set(user_id: int) -> str:
+    return f'Сумма операции: {bot_storage[user_id]["value"]} {bot_storage[user_id]["currency"]}'
+
+
 def operation_complete(user_id: int) -> str:
     return f'Операция успешно сохранена 📌\n' \
            f'Тип операции: {operations_types[bot_storage[user_id]["operation_type"]]}\n' \
@@ -107,10 +127,45 @@ operations_types: dict = {
 
 new_operation_lines: dict = {
     'def_text_category_set': category_set,
+    'def_text_value_set': value_set,
     'def_text_operation_complete': operation_complete,
 
     'error_text_incorrect_value': 'Ошибка ввода. Неверное значение. Повторите попытку.',
 
     'text_choose_income_category': 'Выберите категорию для операции.',
     'text_choose_operation_value': 'Теперь укажите сумму операции.'
+}
+
+
+def load_profile(data: tuple) -> str:
+    return f'Пользователь: @{data[0]}\n' \
+           f'Баланс: {data[2]} {data[1]}'
+
+
+profile_lines: dict = {
+    'profile_info': load_profile,
+}
+
+
+def last_operations(user_id: int, operations_list: list) -> str:
+
+    message_text: str = ''
+
+    for operation in operations_list:
+        if operation[0] == 'income':
+            sign: str = '+'
+            categories: dict = database.load_categories(user_id, operation_type='income')
+        elif operation[0] == 'expense':
+            sign: str = '-'
+            categories: dict = database.load_categories(user_id, operation_type='expense')
+
+        message_text += f'{sign}{operation[3]} {operation[1]} | {categories[operation[2]]["title"]} {emoji.emojize(categories[operation[2]]["emoji"])} | {operation[4]}\n'
+
+    return message_text
+
+
+last_operations_lines: dict = {
+    'def_text_last_operations': last_operations,
+
+    'error_text_last_operations_empty': 'Список последних операций пуст.'
 }

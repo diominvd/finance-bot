@@ -16,3 +16,11 @@ class AddIncome(StatesGroup):
 class AddExpense(StatesGroup):
     set_expense_category = State()
     set_expense_value = State()
+
+
+class ProfileStates(StatesGroup):
+    get_mode = State()
+
+
+class LastOperations(StatesGroup):
+    get_callback = State()
