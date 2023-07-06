@@ -10,3 +10,9 @@ class FirstStart(StatesGroup):
 
 class AddIncome(StatesGroup):
     set_income_category = State()
+    set_income_value = State()
+
+
+class AddExpense(StatesGroup):
+    set_expense_category = State()
+    set_expense_value = State()

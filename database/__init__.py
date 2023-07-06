@@ -60,6 +60,58 @@ def create_user(user_id: int):
     connection.commit()
 
 
-def fetch_income_categories(user_id: int) -> dict:
-    cursor.execute('SELECT income FROM users WHERE user_id = %s', (user_id, ))
-    return json.loads(cursor.fetchall()[0][0])
+def fetch_user_currency(user_id: int) -> str:
+    cursor.execute('SELECT currency FROM users WHERE user_id = %s', (user_id, ))
+    return cursor.fetchall()[0][0]
+
+
+def load_categories(user_id: int, operation_type: str) -> dict:
+    match operation_type:
+        case 'income':
+            cursor.execute('SELECT income FROM users WHERE user_id = %s', (user_id, ))
+            categories: dict = json.loads(str(cursor.fetchall()[0][0]))
+
+            return categories
+        case 'expense':
+            cursor.execute('SELECT expense FROM users WHERE user_id = %s', (user_id,))
+            categories: dict = json.loads(str(cursor.fetchall()[0][0]))
+
+            return categories
+
+
+def add_operation(user_id: int, operation_type: str) -> None:
+    # Fetch operation data from bot storage.
+    user_id: int = bot_storage[user_id]['user_id']
+    operation_type: str = operation_type
+    currency: str = bot_storage[user_id]['currency']
+    category: str = bot_storage[user_id]['category']
+    value: float = bot_storage[user_id]['value']
+
+    # Add operation in database/operations.
+    cursor.execute('''INSERT INTO operations (user_id, operation_type, currency, category, value) VALUES(%s, %s, %s, %s, %s);''',
+                   (user_id, operation_type, currency, category, value))
+    connection.commit()
+
+    # Add operation in database/users.
+    if operation_type == 'income':
+        # Load income categories.
+        cursor.execute('SELECT income FROM users WHERE user_id = %s', (user_id, ))
+        income_categories: dict = json.loads(str(cursor.fetchall()[0][0]))
+
+        # Update data in categories.
+        income_categories[category]['value'] += value
+
+        # Update income data in database/users.
+        cursor.execute('UPDATE users SET income = %s, balance = balance + %s WHERE user_id = %s', (json.dumps(income_categories, ensure_ascii=False), value, user_id))
+        connection.commit()
+    elif operation_type == 'expense':
+        # Load income categories.
+        cursor.execute('SELECT expense FROM users WHERE user_id = %s', (user_id,))
+        expense_categories: dict = json.loads(str(cursor.fetchall()[0][0]))
+
+        # Update data in categories.
+        expense_categories[category]['value'] += value
+
+        # Update income data in database/users.
+        cursor.execute('UPDATE users SET expense = %s, balance = balance - %s WHERE user_id = %s', (json.dumps(expense_categories, ensure_ascii=False), value, user_id))
+        connection.commit()

@@ -5,21 +5,22 @@ from aiogram.types import Message, CallbackQuery
 
 import config
 import database
-import emoji
+from keyboards import menu_kb
 import lines
-import storage
-import utils as u
 from states import FirstStart
+import storage
+from storage import bot_storage
+import utils as u
 
 
 router = Router(name=__name__)
 
-
+"Handler: fetch currency from callback and add it in bot storage."
 @router.callback_query(FirstStart.set_currency, Text(startswith='currency_'))
 async def currency_handler(callback: CallbackQuery, state: FSMContext, bot=config.bot) -> None:
     # Fetch user currency from callback.
     user_id: int = u.fetch_user_id(callback)
-    currency: str = callback.data.split('_')[1]
+    currency: str = lines.keyboards_lines['currencies_keyboard'][callback.data.split('_')[1]]['text']
 
     # Add currency in bot storage.
     storage.update_storage_data(user_id=u.fetch_user_id(callback), key='currency', value=currency)
@@ -34,6 +35,7 @@ async def currency_handler(callback: CallbackQuery, state: FSMContext, bot=confi
     await state.set_state(FirstStart.set_balance)
 
 
+"Handler: fetch balance and add it in bot storage."
 @router.message(FirstStart.set_balance)
 async def balance_handler(message: Message, state: FSMContext) -> None:
     try:
@@ -52,20 +54,11 @@ async def balance_handler(message: Message, state: FSMContext) -> None:
             await state.set_state(FirstStart.set_income_categories)
 
 
+"Handler: fetch income categories and add it in bot storage."
 @router.message(FirstStart.set_income_categories)
 async def income_categories_handler(message: Message, state: FSMContext) -> None:
-    income_categories_list: list = message.text.split('\n')
-    income_categories: dict = {}
-
     try:
-        # Formatted income categories.
-        for category in income_categories_list:
-            new_category = category.split(' ')
-            income_categories[new_category[0].title()] = {
-                'title': new_category[0].title(),
-                'emoji': emoji.demojize(new_category[1]),
-                'value': 0
-            }
+        income_categories: dict = u.generate_categories(message)
     except:
         await message.answer(text=lines.first_start_lines['error_text_incorrect_categories'])
     else:
@@ -77,20 +70,11 @@ async def income_categories_handler(message: Message, state: FSMContext) -> None
         await state.set_state(FirstStart.set_expense_categories)
 
 
+"Handler: fetch expense categories, add it in bot storage and synchronize with database."
 @router.message(FirstStart.set_expense_categories)
 async def expense_categories_handler(message: Message, state: FSMContext) -> None:
-    expense_categories_list: list = message.text.split('\n')
-    expense_categories: dict = {}
-
     try:
-        # Formatted income categories.
-        for category in expense_categories_list:
-            new_category = category.split(' ')
-            expense_categories[new_category[0].title()] = {
-                'title': new_category[0].title(),
-                'emoji': emoji.demojize(new_category[1]),
-                'value': 0
-            }
+        expense_categories: dict = u.generate_categories(message)
     except:
         await message.answer(text=lines.first_start_lines['error_text_incorrect_categories'])
     else:
@@ -98,9 +82,14 @@ async def expense_categories_handler(message: Message, state: FSMContext) -> Non
         storage.update_storage_data(user_id=u.fetch_user_id(message), key='expense', value=expense_categories)
 
         await message.answer(text=lines.first_start_lines['text_first_start_complete'])
-        await message.answer(text=lines.commands_lines['command_text_start'])
+        await message.answer(text=lines.commands_lines['command_text_start'],
+                             reply_markup=menu_kb)
 
         # Create new user in database.
         database.create_user(user_id=u.fetch_user_id(message))
+
+        # Remove user from bot storage.
+        user_id: int = u.fetch_user_id(message)
+        bot_storage.pop(user_id, None)
 
         await state.clear()

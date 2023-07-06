@@ -2,10 +2,12 @@ from config import dispatcher
 from handlers import commands
 from handlers import firststart
 from handlers import income
+from handlers import expense
 
 
 dispatcher.include_routers(
     commands.router,
     firststart.router,
-    income.router
+    income.router,
+    expense.router
 )

@@ -7,9 +7,9 @@ import config
 import database
 from keyboards import menu_kb, currencies_kb
 import lines
-import utils as u
 from states import FirstStart
 import storage
+import utils as u
 
 
 router = Router(name=__name__)
@@ -33,3 +33,13 @@ async def command_start_handler(message: Message, state: FSMContext, bot=config.
                                reply_markup=currencies_kb)
 
         await state.set_state(FirstStart.set_currency)
+
+
+@router.message(Command('help'))
+async def command_start_handler(message: Message) -> None:
+    await message.answer(text=lines.commands_lines['command_text_help'])
+
+
+@router.message(Command('info'))
+async def command_start_handler(message: Message) -> None:
+    await message.answer(text=lines.commands_lines['command_text_info'])

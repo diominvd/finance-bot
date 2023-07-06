@@ -1,4 +1,8 @@
 import config
+import emoji
+
+import storage
+from storage import bot_storage
 
 keyboards_lines: dict = {
     'menu_keyboard': {
@@ -9,38 +13,40 @@ keyboards_lines: dict = {
     },
     'currencies_keyboard': {
         'RUB': {
+            'name': 'RUB',
             'title': '🇷🇺 | RUB (₽)',
             'callback_data': 'currency_RUB',
             'text': '₽'
         },
         'BYN': {
+            'name': 'BYN',
             'title': '🇧🇾 | BYN (Br)',
             'callback_data': 'currency_BYN',
             'text': 'Br'
         },
         'UAH': {
+            'name': 'UAH',
             'title': '🇺🇦 | UAH (₴)',
             'callback_data': 'currency_UAH',
             'text': '₴'
         },
         'KZT': {
+            'name': 'KZT',
             'title': '🇰🇿 | KZT (₸)',
             'callback_data': 'currency_KZT',
             'text': '₸'
         },
         'USD': {
+            'name': 'USD',
             'title': '🇺🇸 | USD ($)',
             'callback_data': 'currency_USD',
             'text': '$'
         },
         'EUR': {
+            'name': 'EUR',
             'title': '🇪🇺 | EUR (€)',
             'callback_data': 'currency_EUR',
             'text': '€'
-        },
-        'cancel': {
-            'title': 'Отмена',
-            'callback_data': 'cancel',
         }
     }
 }
@@ -74,14 +80,37 @@ first_start_lines: dict = {
     'text_set_currency': 'Перед использованием настроим бота. Выберите валюту, которая будет использована в дальнейших операциях.',
     'text_set_balance': 'Отлично. Теперь укажите текущий баланс.',
     'text_set_income_categories': 'Теперь создадим категории для доходов. Отправьте список категорий в формате:\n\n'
-                                  'название_категории emoji\n'
-                                  'название_категории emoji\n\n'
-                                  'Между название категории и emoji должен быть пробел.',
+                                  'Название категории emoji\n'
+                                  'Название категории emoji\n\n'
+                                  'Между названием категории и emoji должен быть пробел.',
     'text_set_expense_categories': 'Теперь отправьте категории расходов в таком же формате, как и категории доходов.',
     'text_first_start_complete': 'Отлично. Первичная настройка завершена.'
 }
 
 
-income_lines: dict = {
-    'text_choose_income_category': 'Выберите категорию для операции.'
+def category_set(user_id: int) -> str:
+    return f'Выбрана категория: {bot_storage[user_id]["category"]} {bot_storage[user_id]["emoji"]}.'
+
+
+def operation_complete(user_id: int) -> str:
+    return f'Операция успешно сохранена 📌\n' \
+           f'Тип операции: {operations_types[bot_storage[user_id]["operation_type"]]}\n' \
+           f'Категория: {bot_storage[user_id]["category"]} {bot_storage[user_id]["emoji"]}\n' \
+           f'Сумма операции: {bot_storage[user_id]["value"]} {bot_storage[user_id]["currency"]}'
+
+
+operations_types: dict = {
+    'income': 'Доход',
+    'expense': 'Расход'
+}
+
+
+new_operation_lines: dict = {
+    'def_text_category_set': category_set,
+    'def_text_operation_complete': operation_complete,
+
+    'error_text_incorrect_value': 'Ошибка ввода. Неверное значение. Повторите попытку.',
+
+    'text_choose_income_category': 'Выберите категорию для операции.',
+    'text_choose_operation_value': 'Теперь укажите сумму операции.'
 }

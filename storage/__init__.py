@@ -7,5 +7,20 @@ import utils as u
 bot_storage: dict = {}
 
 
-def update_storage_data(user_id: int, key: str, value):
+def update_storage_data(user_id: int, key: str, value) -> None:
     bot_storage[user_id][key] = value
+
+
+def create_operation_in_storage(user_id: int, operation_type: str, currency: str) -> None:
+    bot_storage[user_id] = {
+        'user_id': user_id,
+        'operation_type': operation_type,
+        'currency': currency,
+        'category': None,
+        'emoji': None,
+        'value': None
+    }
+
+
+def delete_operation_from_storage(user_id: int) -> None:
+    bot_storage.pop(user_id, None)

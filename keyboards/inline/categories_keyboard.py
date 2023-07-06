@@ -18,7 +18,6 @@ def create_categories_keyboard(categories: dict) -> InlineKeyboardMarkup:
         keyboard_buttons = [keyboard_buttons[i:i + 2] for i in range(0, len(keyboard_buttons) - 1, 2)] + [[keyboard_buttons[-1]]]
 
     keyboard_buttons.append([InlineKeyboardButton(text='Отмена', callback_data='cancel')])
-    print(keyboard_buttons)
 
     categories_keyboard = InlineKeyboardMarkup(inline_keyboard=keyboard_buttons)
 
