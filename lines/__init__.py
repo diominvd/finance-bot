@@ -55,6 +55,7 @@ keyboards_lines: dict = {
         }
     }
 }
+
 currencies: dict = {
     'RUB': {
         'name': 'RUB',
@@ -211,5 +212,6 @@ last_operations_lines: dict = {
 
 
 other_lines: dict = {
-    't-back-to-main-menu': 'Возвращаюсь в главное меню.'
+    't-back-to-main-menu': 'Возвращаюсь в главное меню.',
+    't-back-to-profile': 'Возвращаюсь в профиль',
 }
