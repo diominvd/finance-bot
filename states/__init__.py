@@ -24,3 +24,7 @@ class ProfileStates(StatesGroup):
 
 class LastOperations(StatesGroup):
     get_callback = State()
+
+
+class SettingsStates(StatesGroup):
+    get_mode = State()

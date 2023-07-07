@@ -53,6 +53,10 @@ keyboards_lines: dict = {
             'title': 'Отмена',
             'callback_data': 'cancel'
         }
+    },
+    'settings-keyboard': {
+        'edit-categories': '✏️ | Редактировать категории',
+        'main-menu': '🏠 | Главное меню'
     }
 }
 
@@ -214,4 +218,5 @@ last_operations_lines: dict = {
 other_lines: dict = {
     't-back-to-main-menu': 'Возвращаюсь в главное меню.',
     't-back-to-profile': 'Возвращаюсь в профиль',
+    't-open-settings': 'Открываю настройки',
 }
