@@ -5,16 +5,16 @@ import lines
 def create_profile_keyboard() -> ReplyKeyboardMarkup:
     keyboard_buttons: list = [
         [
-            KeyboardButton(text=lines.keyboards_lines['profile_keyboard']['last_operations'])
+            KeyboardButton(text=lines.keyboards_lines['profile-keyboard']['last_operations'])
         ],
         [
-            KeyboardButton(text=lines.keyboards_lines['profile_keyboard']['statistic'])
+            KeyboardButton(text=lines.keyboards_lines['profile-keyboard']['statistic'])
         ],
         [
-            KeyboardButton(text=lines.keyboards_lines['profile_keyboard']['main_menu'])
+            KeyboardButton(text=lines.keyboards_lines['profile-keyboard']['main_menu'])
         ]
     ]
-    profile_kb: ReplyKeyboardMarkup = ReplyKeyboardMarkup(resize_keyboard=True,
+    ProfileKeyboard: ReplyKeyboardMarkup = ReplyKeyboardMarkup(resize_keyboard=True,
                                                           keyboard=keyboard_buttons)
 
-    return profile_kb
+    return ProfileKeyboard
