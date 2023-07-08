@@ -1,13 +1,6 @@
-[Unit]
-Description=finance_bot
-After=multi-user.target
-
 [Service]
-User=root
-Group=root
-Type=simple
+ExecStart=/var/www/www-root/data/www/financebot.ru/.venv/bin/python3 /var/www/www-root/data/www/financebot.ru/main.py
 Restart=always
-ExecStart=/usr/bin/python3 /var/www/www-root/data/www/financebot.ru/main.py
 
 [Install]
 WantedBy=multi-user.target

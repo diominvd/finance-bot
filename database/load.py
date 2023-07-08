@@ -34,9 +34,11 @@ def load_user_currency(user_id: int) -> str:
 
 
 def load_first_date(user_id: int) -> str:
-    cursor.execute('SELECT date FROM operations WHERE user_id = %s LIMIT 1',
+    cursor.execute('SELECT date FROM operations WHERE user_id = %s ORDER BY operation_id LIMIT 1',
                    (user_id, ))
-    if len(cursor.fetchall()) == 0:
+    try:
+        date: str = cursor.fetchall()[0][0]
+    except:
         return 'Период не определён'
     else:
-        return str(cursor.fetchall()[0][0])
+        return date
