@@ -9,3 +9,14 @@ def check_user(user_id: int):
         return False
     else:
         return True
+
+
+def check_user_balance(user_id: int, value: float) -> bool:
+    cursor.execute('SELECT balance FROM users WHERE user_id = %s',
+                   (user_id, ))
+    balance: float = float(cursor.fetchall()[0][0])
+
+    if balance - value < 0:
+        return False
+    else:
+        return True

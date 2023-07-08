@@ -4,6 +4,7 @@ from aiogram.types import Message
 
 import config
 import database.update
+import database.check
 import lines
 import storage
 from keyboards import MenuKeyboard
@@ -29,27 +30,39 @@ async def expense_value_handler(message: Message, state: FSMContext, bot=config.
         if operation_value < 0:
             await message.answer(text=lines.new_operation_lines['e-t-incorrect-value'])
         else:
-            # Update operation data in storage.
-            storage.update_storage_data(user_id, 'value', operation_value)
+            # Checking the sufficiency of the balance to perform the operation.
+            if database.check.check_user_balance(user_id, operation_value):
+                # Update operation data in storage.
+                storage.update_storage_data(user_id, 'value', operation_value)
 
-            # Save operation into database.
-            database.update.add_operation(user_id)
+                # Save operation into database.
+                database.update.add_operation(user_id)
 
-            # Edit message with value query,
-            await bot.edit_message_text(text=lines.new_operation_lines['d-t-value-set'](operation_value, operation_currency),
-                                        chat_id=chat_id,
-                                        message_id=u.fetch_message_id(message) - 1)
+                # Edit message with value query,
+                await bot.edit_message_text(text=lines.new_operation_lines['d-t-value-set'](operation_value, operation_currency),
+                                            chat_id=chat_id,
+                                            message_id=u.fetch_message_id(message) - 1)
 
-            # Delete message with value from user.
-            await bot.delete_message(chat_id=chat_id,
-                                     message_id=u.fetch_message_id(message))
+                # Delete message with value from user.
+                await bot.delete_message(chat_id=chat_id,
+                                         message_id=u.fetch_message_id(message))
 
-            # Send message about complete the operation.
-            await message.answer(text=lines.new_operation_lines['d-t-operation-complete'](user_id),
-                                 reply_markup=MenuKeyboard)
+                # Send message about complete the operation.
+                await message.answer(text=lines.new_operation_lines['d-t-operation-complete'](user_id),
+                                     reply_markup=MenuKeyboard)
 
-            # Remove operation from bot storage.
-            storage.delete_operation(user_id)
+                # Remove operation from bot storage.
+                storage.delete_operation(user_id)
 
-            # Clear all states -> Return to menu.
-            await state.clear()
+                # Clear all states -> Return to menu.
+                await state.clear()
+            else:
+                # Send error message.
+                await message.answer(text=lines.new_operation_lines['e-t-not-enough-balance'],
+                                     reply_markup=MenuKeyboard)
+
+                # Remove operation from bot storage.
+                storage.delete_operation(user_id)
+
+                # Clear all states -> Return to menu.
+                await state.clear()

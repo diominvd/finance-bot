@@ -44,18 +44,34 @@ async def remove_reply_keyboard(message: Message, bot=config.bot) -> None:
                              message_id=message.message_id + 1)
 
 
-def generate_categories(message: ModelMetaclass) -> list:
-    income_categories_list: list = message.text.split('\n')
-    income_categories: dict = {}
+def generate_categories(message: ModelMetaclass) -> dict:
+    categories_list: list = message.text.split('\n')
+    categories: dict = {}
 
-    for category in income_categories_list:
+    for category in categories_list:
         new_category: list = category.split(' ')
         new_category: list = [' '.join(new_category[:-1]), new_category[-1]]
 
-        income_categories[new_category[0].title()] = {
+        categories[new_category[0].title()] = {
             'title': new_category[0].title(),
             'emoji': emoji.demojize(new_category[1]),
             'value': 0
         }
 
-    return income_categories
+    return categories
+
+
+def add_category(message: ModelMetaclass, categories: dict) -> dict:
+    new_categories_list: list = message.text.split('\n')
+
+    for category in new_categories_list:
+        new_category: list = category.split(' ')
+        new_category: list = [' '.join(new_category[:-1]), new_category[-1]]
+
+        categories[new_category[0].title()] = {
+            'title': new_category[0].title(),
+            'emoji': emoji.demojize(new_category[1]),
+            'value': 0
+        }
+
+    return categories

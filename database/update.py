@@ -65,22 +65,50 @@ def delete_last_operation(user_id: int) -> None:
     # Loading categories depending on the operation.
     categories: dict = database.load.load_categories(user_id, operation_type)
 
-    # Update category value in categories dict.
-    categories[category]['value'] -= value
+    # If operation category was deleted from users categories just delete category from history and change balance.
+    try:
+        # Update category value in categories dict.
+        categories[category]['value'] -= value
+    except:
+        # Delete operation from database/operations.
+        cursor.execute('DELETE FROM operations WHERE user_id = %s ORDER BY operation_id DESC LIMIT 1', (user_id,))
+        connection.commit()
 
-    match operation_type:
+        # Update balance.
+        match operation_type:
+            case 'income':
+                cursor.execute('UPDATE users SET balance = balance - %s WHERE user_id = %s',
+                               (value, user_id))
+            case 'expense':
+                cursor.execute('UPDATE users SET balance = balance + %s WHERE user_id = %s',
+                               (value, user_id))
+    else:
+        match operation_type:
+            case 'income':
+                # Update income data.
+                cursor.execute('UPDATE users SET income = %s, balance = balance - %s WHERE user_id = %s',
+                               (json.dumps(categories, ensure_ascii=False), value, user_id))
+            case 'expense':
+                # Update expense data.
+                cursor.execute('UPDATE users SET expense = %s, balance = balance + %s WHERE user_id = %s',
+                               (json.dumps(categories, ensure_ascii=False), value, user_id))
+
+        # Save changes into database/users.
+        connection.commit()
+
+        # Delete operation from database/operations.
+        cursor.execute('DELETE FROM operations WHERE user_id = %s ORDER BY operation_id DESC LIMIT 1', (user_id, ))
+        connection.commit()
+
+
+def update_categories(user_id: int, category_type: str, categories: dict) -> None:
+    match category_type:
         case 'income':
-            # Update income data.
-            cursor.execute('UPDATE users SET income = %s, balance = balance - %s WHERE user_id = %s',
-                           (json.dumps(categories, ensure_ascii=False), value, user_id))
+            cursor.execute('UPDATE users SET income = %s WHERE user_id = %s',
+                           (json.dumps(categories, ensure_ascii=False), user_id))
         case 'expense':
-            # Update expense data.
-            cursor.execute('UPDATE users SET expense = %s, balance = balance + %s WHERE user_id = %s',
-                           (json.dumps(categories, ensure_ascii=False), value, user_id))
+            cursor.execute('UPDATE users SET expense = %s WHERE user_id = %s',
+                           (json.dumps(categories, ensure_ascii=False), user_id))
 
-    # Save changes into database/users.
-    connection.commit()
-
-    # Delete operation from database/operations.
-    cursor.execute('DELETE FROM operations WHERE user_id = %s ORDER BY operation_id DESC LIMIT 1', (user_id, ))
+    # Save changes in database.
     connection.commit()

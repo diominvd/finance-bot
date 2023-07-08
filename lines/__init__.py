@@ -46,17 +46,30 @@ keyboards_lines: dict = {
     },
     'last-operations-keyboard': {
         'delete_last': {
-            'title': 'Удалить последнюю операцию',
+            'title': 'Отменить последнюю операцию',
             'callback_data': 'delete_last'
         },
         'cancel': {
-            'title': 'Отмена',
+            'title': '« Назад в профиль',
             'callback_data': 'cancel'
         }
     },
     'settings-keyboard': {
         'edit-categories': '✏️ | Редактировать категории',
         'main-menu': '🏠 | Главное меню'
+    },
+    'categories-type-keyboard': {
+        'income': '📈 | Категории доходов',
+        'expense': '📉 | Категории расходов',
+        'cancel': 'Назад в настройки'
+    },
+    'edit-categories-mode-keyboard': {
+        'add': '➕ | Добавить категории',
+        'delete': '➖ | Удалить категории',
+        'cancel': 'Назад в настройки'
+    },
+    'add-categories-keyboard': {
+        'cancel': 'Назад в настройки'
     }
 }
 
@@ -87,8 +100,8 @@ currencies: dict = {
     }
 }
 operations_types: dict = {
-    'income': 'Доход',
-    'expense': 'Расход'
+    'income': 'Доход 📈',
+    'expense': 'Расход 📉'
 }
 
 """
@@ -153,7 +166,7 @@ def operation_complete(user_id: int) -> str:
     operation_value: float = bot_storage[user_id]["value"]
     operation_currency: str = bot_storage[user_id]["currency"]
 
-    return f'Операция успешно сохранена 📌\n' \
+    return f'📌 Операция успешно сохранена.\n' \
            f'Тип операции: {operation_type}\n' \
            f'Категория: {operation_category} {operation_category_emoji}\n' \
            f'Сумма операции: {operation_value} {operation_currency}'
@@ -167,8 +180,10 @@ new_operation_lines: dict = {
     'd-t-value-set': value_set,
     'd-t-operation-complete': operation_complete,
 
+    'e-t-categories-empty': 'Невозможно добавить операцию. Список категорий пуст. Добавьте хотя бы одну категорию и повторите попытку.',
     'e-t-incorrect-value': 'Ошибка ввода. Неверное значение. Повторите попытку.',
     'e-r-operation-canceled': 'Операция отменена.',
+    'e-t-not-enough-balance': 'Невозможно добавить операцию. Недостаточно средств.',
 
     't-choose-category': 'Выберите категорию для операции.',
     't-choose-value': 'Теперь укажите сумму операции.'
@@ -199,8 +214,15 @@ def last_operations(user_id: int, operations_list: list) -> str:
 
         operation_value: float = operation[3]
         operation_currency: str = operation[1]
-        operation_category: str = categories[operation[2]]["title"]
-        category_emoji: str = emoji.emojize(categories[operation[2]]["emoji"])
+
+        # If category deleted emoji will be like 🚫.
+        try:
+            operation_category: str = categories[operation[2]]["title"]
+            category_emoji: str = emoji.emojize(categories[operation[2]]["emoji"])
+        except:
+            operation_category: str = operation[2]
+            category_emoji: str = '🚫'
+
         operation_date: str = operation[4]
 
         message_text += f'{sign}{operation_value} {operation_currency} | {operation_category} {category_emoji} | {operation_date}\n'
@@ -214,9 +236,30 @@ last_operations_lines: dict = {
     'e-t-last-operations-empty': 'Список последних операций пуст.'
 }
 
+def category_deleted(category_name: str, category_emoji: str) -> str:
+    return f'Категория "{category_name} {emoji.emojize(category_emoji)}" успешно удалена.'
+
+
+edit_categories_lines: dict = {
+    'd-t-category-deleted': category_deleted,
+    'e-t-categories-empty': 'Список категорий пуст.',
+    'e-t-incorrect-category': 'Ошибка при создании категории. Неверный формат. Повторите попытку.',
+
+    't-choose-categories-type': 'Выберите тип категорий для редактирования.',
+    't-choose-edit-mode': 'Выберите соответсвующую функцию.',
+    't-categories-for-add': 'Отправьте категорию / категории в формате:\n\n'
+                            'Название категории emoji\n'
+                            'Название категории emoji\n\n'
+                            'Между названием категории и emoji должен быть пробел!',
+    't-categories-for-delete': 'Нажмите на соответсвующую категорию для её удаления.',
+    't-category-added': 'Список категорий успешно обновлён.',
+
+}
+
 
 other_lines: dict = {
     't-back-to-main-menu': 'Возвращаюсь в главное меню.',
-    't-back-to-profile': 'Возвращаюсь в профиль',
-    't-open-settings': 'Открываю настройки',
+    't-back-to-profile': 'Возвращаюсь в профиль.',
+    't-open-settings': 'Открываю настройки.',
+    't-back-to-settings': 'Возвращаюсь в настройки.',
 }

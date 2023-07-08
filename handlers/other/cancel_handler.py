@@ -5,8 +5,8 @@ from aiogram.types import Message, CallbackQuery
 
 import config
 import lines
-from keyboards import MenuKeyboard, ProfileKeyboard
-from states import AddExpense, AddIncome, LastOperations, ProfileStates
+from keyboards import MenuKeyboard, ProfileKeyboard, SettingsKeyboard
+from states import AddExpense, AddIncome, LastOperations, ProfileStates, SettingsStates, EditCategories, EditIncomeCategories, EditExpenseCategories
 import utils as u
 
 router = Router(name=__name__)
@@ -64,3 +64,40 @@ async def main_menu_handler(message: Message, state: FSMContext, bot=config.bot)
 
     # Clear all states.
     await state.clear()
+
+
+@router.message(EditCategories.choose_categories_type, Text(lines.keyboards_lines['categories-type-keyboard']['cancel']))
+@router.message(EditIncomeCategories.get_mode, Text(lines.keyboards_lines['edit-categories-mode-keyboard']['cancel']))
+@router.message(EditExpenseCategories.get_mode, Text(lines.keyboards_lines['edit-categories-mode-keyboard']['cancel']))
+@router.message(EditIncomeCategories.get_categories_for_add, Text(lines.keyboards_lines['add-categories-keyboard']['cancel']))
+@router.message(EditExpenseCategories.get_categories_for_add, Text(lines.keyboards_lines['add-categories-keyboard']['cancel']))
+async def main_menu_handler(message: Message, state: FSMContext, bot=config.bot):
+    chat_id: int = u.fetch_chat_id(message)
+
+    # Back to main menu.
+    await bot.send_message(text=lines.other_lines['t-back-to-settings'],
+                           chat_id=chat_id,
+                           reply_markup=SettingsKeyboard)
+
+    # Clear all states.
+    await state.set_state(SettingsStates.get_mode)
+
+
+@router.callback_query(EditIncomeCategories.get_categories_for_delete, Text('cancel'))
+@router.callback_query(EditExpenseCategories.get_categories_for_delete, Text('cancel'))
+@u.remove_callback_delay
+async def cancel_handler(callback: CallbackQuery, state: FSMContext, bot=config.bot):
+    chat_id: int = u.fetch_chat_id(callback)
+
+    # Remove inline keyboard.
+    await bot.edit_message_reply_markup(chat_id=chat_id,
+                                        message_id=u.fetch_message_id(callback),
+                                        reply_markup=None)
+
+    # Back to settings.
+    await bot.send_message(text=lines.other_lines['t-back-to-settings'],
+                           chat_id=chat_id,
+                           reply_markup=SettingsKeyboard)
+
+    # Clear all states.
+    await state.set_state(SettingsStates.get_mode)

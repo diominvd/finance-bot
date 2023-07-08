@@ -28,3 +28,19 @@ class LastOperations(StatesGroup):
 
 class SettingsStates(StatesGroup):
     get_mode = State()
+
+
+class EditCategories(StatesGroup):
+    choose_categories_type = State()
+
+
+class EditIncomeCategories(StatesGroup):
+    get_mode = State()
+    get_categories_for_add = State()
+    get_categories_for_delete = State()
+
+
+class EditExpenseCategories(StatesGroup):
+    get_mode = State()
+    get_categories_for_add = State()
+    get_categories_for_delete = State()

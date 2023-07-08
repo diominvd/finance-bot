@@ -15,7 +15,7 @@ def create_menu_keyboard() -> ReplyKeyboardMarkup:
             KeyboardButton(text=lines.keyboards_lines['menu-keyboard']['settings'])
         ]
     ]
-    menu_kb: ReplyKeyboardMarkup = ReplyKeyboardMarkup(resize_keyboard=True,
-                                                       keyboard=keyboard_buttons)
+    MenuKeyboard: ReplyKeyboardMarkup = ReplyKeyboardMarkup(resize_keyboard=True,
+                                                            keyboard=keyboard_buttons)
 
-    return menu_kb
+    return MenuKeyboard

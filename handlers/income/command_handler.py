@@ -19,18 +19,23 @@ router = Router(name=__name__)
 async def income_command_handler(message: Message, state: FSMContext, bot=config.bot) -> None:
     user_id: int = u.fetch_user_id(message)
 
-    # Remove menu keyboard from dialog.
-    await u.remove_reply_keyboard(message)
+    # Check categories list.
+    categories: dict = database.load.load_categories(user_id, 'income')
+    if len(categories) == 0:
+        await message.answer(text=lines.new_operation_lines['e-t-categories-empty'])
+    else:
+        # Remove menu keyboard from dialog.
+        await u.remove_reply_keyboard(message)
 
-    # Create operation in bot storage.
-    storage.create_operation(user_id, 'income')
+        # Create operation in bot storage.
+        storage.create_operation(user_id, 'income')
 
-    # Load expense categories for create categories keyboard.
-    income_categories: dict = database.load.load_categories(user_id, 'income')
+        # Load expense categories for create categories keyboard.
+        income_categories: dict = database.load.load_categories(user_id, 'income')
 
-    # Send message with categories.
-    await message.answer(text=lines.new_operation_lines['t-choose-category'],
-                         reply_markup=create_categories_keyboard(income_categories))
+        # Send message with categories.
+        await message.answer(text=lines.new_operation_lines['t-choose-category'],
+                             reply_markup=create_categories_keyboard(income_categories))
 
-    # Set state AddIncome.set_income_category.
-    await state.set_state(AddIncome.set_income_category)
+        # Set state AddIncome.set_income_category.
+        await state.set_state(AddIncome.set_income_category)

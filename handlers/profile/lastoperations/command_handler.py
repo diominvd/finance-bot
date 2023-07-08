@@ -19,9 +19,6 @@ async def last_operations_command_handler(message: Message, state: FSMContext, b
     user_id: int = u.fetch_user_id(message)
     chat_id: int = u.fetch_chat_id(message)
 
-    # Remove reply keyboard.
-    await u.remove_reply_keyboard(message)
-
     # Load last user operations from database.
     last_operations: list = database.load.load_last_operations(user_id)
 
@@ -31,6 +28,9 @@ async def last_operations_command_handler(message: Message, state: FSMContext, b
                                text=lines.last_operations_lines['e-t-last-operations-empty'],
                                reply_markup=ProfileKeyboard)
     else:
+        # Remove reply keyboard.
+        await u.remove_reply_keyboard(message)
+
         # Send message with last operations + inline keyboard.
         await message.answer(text=lines.last_operations_lines['d-t-last-operations'](user_id, last_operations),
                              reply_markup=LastOperationsKeyboard)
