@@ -5,5 +5,6 @@ from handlers import income
 from handlers import other
 from handlers import profile
 from handlers.profile import lastoperations
+from handlers.profile import statistic
 from handlers import settings
 from handlers.settings import editcategories

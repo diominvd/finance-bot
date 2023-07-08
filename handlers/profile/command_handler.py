@@ -15,8 +15,10 @@ router = Router(name=__name__)
 
 @router.message(Text(lines.keyboards_lines['menu-keyboard']['profile']))
 async def profile_command_handler(message: Message, state: FSMContext) -> None:
+    user_id: int = u.fetch_user_id(message)
+
     # Load user data from database.
-    profile_info: tuple = database.load.load_profile_info(user_id=u.fetch_user_id(message))
+    profile_info: tuple = database.load.load_profile_info(user_id)
 
     await message.answer(text=lines.profile_lines['d-t-profile-info'](profile_info),
                          reply_markup=ProfileKeyboard)

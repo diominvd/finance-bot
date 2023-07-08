@@ -10,4 +10,4 @@ router = Router(name=__name__)
 
 @router.message(Command('help'))
 async def command_start_handler(message: Message) -> None:
-    await message.answer(text=lines.commands_lines['command-text-help'])
+    await message.answer(text=lines.commands_lines['c-t-help'])
