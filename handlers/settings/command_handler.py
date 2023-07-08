@@ -3,11 +3,9 @@ from aiogram.filters import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-import database.load
 import lines
 from keyboards import SettingsKeyboard
 from states import SettingsStates
-import utils as u
 
 
 router = Router(name=__name__)

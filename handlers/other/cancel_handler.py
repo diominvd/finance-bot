@@ -12,6 +12,21 @@ import utils as u
 router = Router(name=__name__)
 
 
+"Handler: backing to main menu."
+@router.message(Text('🏠 | Главное меню'))
+async def main_menu_handler(message: Message, state: FSMContext, bot=config.bot):
+    chat_id: int = u.fetch_chat_id(message)
+
+    # Back to main menu.
+    await bot.send_message(text=lines.other_lines['t-back-to-main-menu'],
+                           chat_id=chat_id,
+                           reply_markup=MenuKeyboard)
+
+    # Clear all states.
+    await state.clear()
+
+
+"Handler: backing to main menu."
 @router.callback_query(AddExpense.set_expense_category, Text(startswith='cancel'))
 @router.callback_query(AddIncome.set_income_category, Text(startswith='cancel'))
 @router.callback_query(LastOperations.get_callback, Text(startswith='cancel'))
@@ -34,6 +49,7 @@ async def cancel_handler(callback: CallbackQuery, state: FSMContext, bot=config.
     await state.clear()
 
 
+"Handler: backing to profile."
 @router.callback_query(LastOperations.get_callback, Text(startswith='cancel'))
 @u.remove_callback_delay
 async def cancel_handler(callback: CallbackQuery, state: FSMContext, bot=config.bot):
@@ -53,36 +69,25 @@ async def cancel_handler(callback: CallbackQuery, state: FSMContext, bot=config.
     await state.set_state(ProfileStates.get_mode)
 
 
-@router.message(Text('🏠 | Главное меню'))
-async def main_menu_handler(message: Message, state: FSMContext, bot=config.bot):
-    chat_id: int = u.fetch_chat_id(message)
-
-    # Back to main menu.
-    await bot.send_message(text=lines.other_lines['t-back-to-main-menu'],
-                           chat_id=chat_id,
-                           reply_markup=MenuKeyboard)
-
-    # Clear all states.
-    await state.clear()
-
-
+"Handler: backing to settings."
 @router.message(EditCategories.choose_categories_type, Text(lines.keyboards_lines['categories-type-keyboard']['cancel']))
 @router.message(EditIncomeCategories.get_mode, Text(lines.keyboards_lines['edit-categories-mode-keyboard']['cancel']))
 @router.message(EditExpenseCategories.get_mode, Text(lines.keyboards_lines['edit-categories-mode-keyboard']['cancel']))
 @router.message(EditIncomeCategories.get_categories_for_add, Text(lines.keyboards_lines['add-categories-keyboard']['cancel']))
 @router.message(EditExpenseCategories.get_categories_for_add, Text(lines.keyboards_lines['add-categories-keyboard']['cancel']))
-async def main_menu_handler(message: Message, state: FSMContext, bot=config.bot):
+async def back_to_settings_handler(message: Message, state: FSMContext, bot=config.bot):
     chat_id: int = u.fetch_chat_id(message)
 
-    # Back to main menu.
+    # Back to Settings.
     await bot.send_message(text=lines.other_lines['t-back-to-settings'],
                            chat_id=chat_id,
                            reply_markup=SettingsKeyboard)
 
-    # Clear all states.
+    # Set state -> SettingsStates.get_mode.
     await state.set_state(SettingsStates.get_mode)
 
 
+"Handler: backing to settings."
 @router.callback_query(EditIncomeCategories.get_categories_for_delete, Text('cancel'))
 @router.callback_query(EditExpenseCategories.get_categories_for_delete, Text('cancel'))
 @u.remove_callback_delay

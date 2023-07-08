@@ -11,7 +11,7 @@ def create_settings_keyboard() -> ReplyKeyboardMarkup:
             KeyboardButton(text=lines.keyboards_lines['settings-keyboard']['main-menu'])
         ]
     ]
-    ProfileKeyboard: ReplyKeyboardMarkup = ReplyKeyboardMarkup(resize_keyboard=True,
-                                                               keyboard=keyboard_buttons)
+    SettingsKeyboard: ReplyKeyboardMarkup = ReplyKeyboardMarkup(resize_keyboard=True,
+                                                                keyboard=keyboard_buttons)
 
-    return ProfileKeyboard
+    return SettingsKeyboard
