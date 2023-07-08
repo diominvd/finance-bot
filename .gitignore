@@ -10,6 +10,7 @@ src
 venv
 .venv
 secrets.txt
+financebot.service
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

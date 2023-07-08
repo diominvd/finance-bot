@@ -1,8 +1,8 @@
 import aiogram
 from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.fsm.state import State
+import emoji
 import config
-import data.database
 from pydantic.main import ModelMetaclass
 
 
@@ -42,3 +42,36 @@ async def remove_reply_keyboard(message: Message, bot=config.bot) -> None:
 
     await bot.delete_message(chat_id=message.chat.id,
                              message_id=message.message_id + 1)
+
+
+def generate_categories(message: ModelMetaclass) -> dict:
+    categories_list: list = message.text.split('\n')
+    categories: dict = {}
+
+    for category in categories_list:
+        new_category: list = category.split(' ')
+        new_category: list = [' '.join(new_category[:-1]), new_category[-1]]
+
+        categories[new_category[0].title()] = {
+            'title': new_category[0].title(),
+            'emoji': emoji.demojize(new_category[1]),
+            'value': 0
+        }
+
+    return categories
+
+
+def add_category(message: ModelMetaclass, categories: dict) -> dict:
+    new_categories_list: list = message.text.split('\n')
+
+    for category in new_categories_list:
+        new_category: list = category.split(' ')
+        new_category: list = [' '.join(new_category[:-1]), new_category[-1]]
+
+        categories[new_category[0].title()] = {
+            'title': new_category[0].title(),
+            'emoji': emoji.demojize(new_category[1]),
+            'value': 0
+        }
+
+    return categories
