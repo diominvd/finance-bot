@@ -1,356 +1,298 @@
-import pydantic.main
 import datetime
+import emoji
 
 import config
-from config import bot_storage
-from data import database
+import database.load
+import storage
+from storage import bot_storage
 
 
 keyboards_lines: dict = {
-    'currencies_keyboard': {
-        'RUB': {
-            'title': '🇷🇺 | RUB (₽)',
-            'callback_data': 'currency_₽'
-        },
-        'BYN': {
-            'title': '🇧🇾 | BYN (Br)',
-            'callback_data': 'currency_Br'
-        },
-        'UAH': {
-            'title': '🇺🇦 | UAH (₴)',
-            'callback_data': 'currency_₴'
-        },
-        'KZT': {
-            'title': '🇰🇿 | KZT (₸)',
-            'callback_data': 'currency_₸'
-        },
-        'USD': {
-            'title': '🇺🇸 | USD ($)',
-            'callback_data': 'currency_$'
-        },
-        'EUR': {
-            'title': '🇪🇺 | EUR (€)',
-            'callback_data': 'currency_€'
-        },
-        'cancel': {
-            'title': 'Отмена',
-            'callback_data': 'cancel'
-        }
-    },
-    'categories_keyboard': {
-        'products': {
-            'title': '🍞 | Продукты',
-            'callback_data': 'category_products'
-        },
-        'cafes': {
-            'title': '🍔 | Кафе',
-            'callback_data': 'category_cafes'
-        },
-        'auto': {
-            'title': '🚘 | Автомобиль',
-            'callback_data': 'category_auto'
-        },
-        'transport': {
-            'title': '🚃 | Транспорт',
-            'callback_data': 'category_transport'
-        },
-        'home': {
-            'title': '🏡 | Дом',
-            'callback_data': 'category_home'
-        },
-        'entertainment': {
-            'title': '🎡 | Развлечения',
-            'callback_data': 'category_entertainment'
-        },
-        'sport': {
-            'title': '🏓 | Спорт',
-            'callback_data': 'category_sport'
-        },
-        'health': {
-            'title': '💊 | Здоровье',
-            'callback_data': 'category_health'
-        },
-        'education': {
-            'title': '📚 | Образование',
-            'callback_data': 'category_education'
-        },
-        'gifts': {
-            'title': '🎁 | Подарки',
-            'callback_data': 'category_gifts'
-        },
-        'beauty': {
-            'title': '💄 | Красота',
-            'callback_data': 'category_beauty'
-        },
-        'clothes': {
-            'title': '👕 | Одежда',
-            'callback_data': 'category_clothes'
-        },
-        'technic': {
-            'title': '🖥 | Техника',
-            'callback_data': 'category_technic'
-        },
-        'subscriptions': {
-            'title': '📲 | Подписки',
-            'callback_data': 'category_subscriptions'
-        },
-        'menu': {
-            'title': 'Главное меню',
-            'callback_data': 'menu'
-        }
-    },
-    'last_operations_keyboard': {
-        'delete_last_operation': {
-            'title': 'Удалить последнюю операцию',
-            'callback_data': 'delete_last'
-        },
-        'menu': {
-            'title': 'Главное меню',
-            'callback_data': 'menu'
-        }
-    },
-    'menu_keyboard': {
-        'add_operation': '➕ | Добавить операцию',
-        'last_operations': '🕔 | Последние операции',
+    'menu-keyboard': {
+        'income': '📈 | Доход',
+        'expense': '📉 | Расход',
         'profile': '👤 | Профиль',
         'settings': '⚙️ | Настройки'
     },
-    'settings_keyboard': {
-        'clear_all_operations': '🗑 | Очистить список операций',
-        'change_currency': '💱 | Изменить валюту',
-        'menu': '🏠 | Главное меню'
+    'currencies-keyboard': {
+        'RUB': {
+            'title': '🇷🇺 | RUB (₽)',
+            'callback_data': 'currency_RUB',
+        },
+        'BYN': {
+            'title': '🇧🇾 | BYN (Br)',
+            'callback_data': 'currency_BYN',
+        },
+        'UAH': {
+            'title': '🇺🇦 | UAH (₴)',
+            'callback_data': 'currency_UAH',
+        },
+        'KZT': {
+            'title': '🇰🇿 | KZT (₸)',
+            'callback_data': 'currency_KZT',
+        },
+        'USD': {
+            'title': '🇺🇸 | USD ($)',
+            'callback_data': 'currency_USD',
+        },
+        'EUR': {
+            'title': '🇪🇺 | EUR (€)',
+            'callback_data': 'currency_EUR',
+        }
     },
+    'profile-keyboard': {
+        'last_operations': '🕐 | Последние операции',
+        'statistic': '📊 | Статистика',
+        'main_menu': '🏠 | Главное меню'
+    },
+    'last-operations-keyboard': {
+        'delete_last': {
+            'title': 'Отменить последнюю операцию',
+            'callback_data': 'delete_last'
+        },
+        'cancel': {
+            'title': '« Назад в профиль',
+            'callback_data': 'cancel'
+        }
+    },
+    'settings-keyboard': {
+        'edit-categories': '✏️ | Редактировать категории',
+        'main-menu': '🏠 | Главное меню'
+    },
+    'categories-type-keyboard': {
+        'income': '📈 | Категории доходов',
+        'expense': '📉 | Категории расходов',
+        'cancel': 'Назад в настройки'
+    },
+    'edit-categories-mode-keyboard': {
+        'add': '➕ | Добавить категории',
+        'delete': '➖ | Удалить категории',
+        'cancel': 'Назад в настройки'
+    },
+    'add-categories-keyboard': {
+        'cancel': 'Назад в настройки'
+    }
 }
 
-categories: dict = {
-    'products': 'Продукты 🍞',
-    'cafes': 'Кафе 🍔',
-    'auto': 'Автомобиль 🚘',
-    'transport': 'Транспорт 🚃',
-    'home': 'Дом 🏡',
-    'entertainment': 'Развлечения 🎡',
-    'sport': 'Спорт 🏓',
-    'health': 'Здоровье 💊',
-    'education': 'Образование 📚',
-    'gifts': 'Подарки 🎁',
-    'beauty': 'Красота 💄',
-    'clothes': 'Одежда 👕',
-    'technic': 'Техника 🖥',
-    'subscriptions': 'Подписки 📲'
+currencies: dict = {
+    'RUB': {
+        'name': 'RUB',
+        'symbol': '₽',
+    },
+    'BYN': {
+        'name': 'BYN',
+        'symbol': 'Br',
+    },
+    'UAH': {
+        'name': 'UAH',
+        'symbol': '₴',
+    },
+    'KZT': {
+        'name': 'KZT',
+        'symbol': '₸',
+    },
+    'USD': {
+        'name': 'USD',
+        'symbol': '$',
+    },
+    'EUR': {
+        'name': 'EUR',
+        'symbol': '€',
+    }
+}
+operations_types: dict = {
+    'income': 'Доход 📈',
+    'expense': 'Расход 📉'
 }
 
+"""
+c = command; t = text; d = def.
+"""
 commands_lines: dict = {
-    'text_help_command': 'Список основных функций бота:\n\n'
-                         '1. <b>Добавить операцию</b> - Позволяет добавить операцию с последующим выбором категории и суммы. '
-                         'Операция сохраняется в базу данных.\n\n'
-                         '2. <b>Последние операции</b> - Отображает последние 5 операций с возможностью '
-                         'удалить последнюю добавленную операцию.\n\n'
-                         '3. <b>Профиль</b> - Отображает вашу статистику по всем категориям за отчётный период.\n\n'
-                         '4. <b>Настройки</b> - Дополнительные функции.\n'
-                         '4.1 <b>Очистить историю операций</b> - Удаляет всю историю операций. При этом сбрасывается отчётный период. '
-                         'Чтобы начать новый период добавьте новую операцию.',
-    'text_start_command': 'Добро пожаловать в Finance Bot 💲\n\n'
-                          'Этот бот поможет вести учёт расходов. '
-                          'Вы можете классифицировать все операции по категориям, '
-                          'просматривать последние операции и формировать отчёт за определённый период.\n\n'
-                          'Для получения дополнительной информации напишите команду "/help."',
-    'text_info_command': f'<b>Finance Bot v{config.version}</b>.\n'
-                         f'Исходный код проекта на Git Hub: clck.ru/34qJYm\n'
-                         f'Официальная группа: @diominvdev\n'
-                         f'Developer: @diominvd',
+    'c-t-help': 'Список основных функций бота:\n\n'
+                '1. <b>Доход</b>, <b>Расход</b> - Позволяет добавить операцию с последующим выбором категории и суммы. '
+                'Операция сохраняется в базу данных.\n\n'
+                '2. <b>Профиль</b> - Отображает текущий баланс.\n'
+                '2.1. <b>Последние операции</b> - Отображает последние 10 операций и позволяет отменить последнюю операцию.\n'
+                '2.1.1. <b>Отменить последнюю операцию</b> - Удаляет последнюю операцию из базы данных с соответствующим изменением баланса.\n'
+                '2.2. <b>Статистика</b> - Отображает статистику по всем операциям.\n'
+                'При отсутствии операций период не будет определён.\n\n'
+                '3. <b>Настройки</b> - Дополнительные функции.\n'
+                '3.1 <b>Редактировать категории</b> - Позволяет создавать свои категории и удалять существующие.\n'
+                'При удалении категории она исчезает из "Статистики", но отображается в списке последних операций с соответствующим '
+                'emoji 🚫. Вы можете удалить ее из списка последних операций.',
+    'c-t-info': f'<b>Finance Bot v{config.version}</b>.\n'
+                f'Исходный код проекта на Git Hub: clck.ru/34qJYm\n'
+                f'Официальная группа: @diominvdev\n'
+                f'Developer: @diominvd',
+    'c-t-start': 'Добро пожаловать в Finance Bot 💲\n\n'
+                 'Этот бот поможет вести учёт расходов. '
+                 'Вы можете классифицировать все операции по категориям, '
+                 'просматривать последние операции и формировать отчёт за определённый период.\n\n'
+                 'Для получения дополнительной информации напишите команду "/help."',
 }
 
-def currency(symbol: str) -> str:
-    return f'Выбрана валюта: {symbol}'
+"""
+e = error; t = text; d = def.
+"""
+first_start_lines: dict = {
+    'e-t-incorrect-categories': 'Невозможно обработать категории. Повторите попытку.',
+    'e-t-wrong-balance': 'Некорректное значение. Повторите попытку',
 
-
-def change_currency(symbol: str) -> str:
-    return f'Установлена валюта: {symbol}\n' \
-           f'Список операций очищен.'
-
-
-def change_currency_error(symbol: str) -> str:
-    return f'Ошибка. Валюта "{symbol}" уже установленна.'
-
-
-currency_lines: dict = {
-    'def_text_currency_chosen': currency,
-
-    'error_text_currency_already_set': change_currency_error,
-
-    'text_choose_currency': 'Пожалуйста, выберите вашу валюту из списка ниже.',
-    'text_currency_changed': change_currency,
-
-    'warning_text_change_currency': 'При изменении валюты список операций будет очищен. '
-                                    'Для изменения валюты выберите необходимую из списка ниже.'
+    't-choose-currency': 'Перед использованием настроим бота. Выберите валюту, которая будет использована в дальнейших операциях.',
+    't-currency-set': 'Выбрана валюта: ',
+    't-choose-balance': 'Отлично. Теперь укажите текущий баланс.',
+    't-balance-set': 'Установлен баланс: ',
+    't-set-income-categories': 'Теперь создадим категории для доходов. Отправьте список категорий в формате:\n\n'
+                               'Название категории emoji\n'
+                               'Название категории emoji\n\n'
+                               'Между названием категории и emoji должен быть пробел. Например:\n\n'
+                               'Работа 💰\n'
+                               'Вторая работа 🛠',
+    't-set-expense-categories': 'Теперь отправьте категории расходов в таком же формате, как и категории доходов.',
+    't-initial-setup-complete': 'Отлично. Первичная настройка завершена.'
 }
 
 
-def last_operations(user_id: int) -> str:
-    operations_list: list = database.select_operations(user_id=user_id, limit=5)
-    message_text: str = f'Последние операции:\n'
+def category_set(category: str, emoji: str) -> str:
+    return f'Выбрана категория: {category} {emoji}.'
+
+
+def value_set(value: float, currency: str) -> str:
+    return f'Сумма операции: {value} {currency}'
+
+
+def operation_complete(user_id: int) -> str:
+    # Load operation data from bot storage.
+    operation_type: str = operations_types[bot_storage[user_id]["operation_type"]]
+    operation_category: str = bot_storage[user_id]["category"]
+    operation_category_emoji: str = bot_storage[user_id]["emoji"]
+    operation_value: float = bot_storage[user_id]["value"]
+    operation_currency: str = bot_storage[user_id]["currency"]
+
+    return f'📌 Операция успешно сохранена.\n' \
+           f'Тип операции: {operation_type}\n' \
+           f'Категория: {operation_category} {operation_category_emoji}\n' \
+           f'Сумма операции: {operation_value} {operation_currency}'
+
+
+"""
+e = error; t = text; d = def.
+"""
+new_operation_lines: dict = {
+    'd-t-category-set': category_set,
+    'd-t-value-set': value_set,
+    'd-t-operation-complete': operation_complete,
+
+    'e-t-categories-empty': 'Невозможно добавить операцию. Список категорий пуст. Добавьте хотя бы одну категорию и повторите попытку.',
+    'e-t-incorrect-value': 'Ошибка ввода. Неверное значение. Повторите попытку.',
+    'e-r-operation-canceled': 'Операция отменена.',
+    'e-t-not-enough-balance': 'Невозможно добавить операцию. Недостаточно средств.',
+
+    't-choose-category': 'Выберите категорию для операции.',
+    't-choose-value': 'Теперь укажите сумму операции.'
+}
+
+
+def load_profile(data: tuple) -> str:
+    return f'Пользователь: @{data[0]}\n' \
+           f'Баланс: {data[2]} {data[1]}'
+
+
+def load_statistic(income: dict, expense: dict, currency: str, first_date: str) -> str:
+    current_date: list = list(reversed(str(datetime.date.today()).split('-')))
+    current_date: str = '.'.join(current_date)
+
+    total_income: float = 0
+    total_expense: float = 0
+
+    message_text: str = f'Статистика доходов:\n'
+    for key, value in income.items():
+        message_text += f'∟ {value["title"]} {emoji.emojize(value["emoji"])}: {value["value"]} {currency}\n'
+        total_income += value["value"]
+    message_text += f'<b>Всего получено</b>: {total_income} {currency}\n'
+
+    message_text += f'\nСтатистика расходов:\n'
+    for key, value in expense.items():
+        message_text += f'∟ {value["title"]} {emoji.emojize(value["emoji"])}: {value["value"]} {currency}\n'
+        total_expense += value["value"]
+    message_text += f'<b>Всего потрачено</b>: {total_income} {currency}\n'
+
+    if first_date == 'Период не определён':
+        message_text += f'\nПериод: <b>{first_date}</b>\n' \
+                        f'Так как отсутствуют операции.'
+    else:
+        message_text += f'\nПериод: <b>{first_date}</b> - <b>{current_date}</b>'
+
+    return message_text
+
+
+profile_lines: dict = {
+    'd-t-load-statistic': load_statistic,
+    'd-t-profile-info': load_profile,
+}
+
+
+def last_operations(user_id: int, operations_list: list) -> str:
+    message_text: str = ''
 
     for operation in operations_list:
-        currency: str = operation[0]
-        category: str = operation[1]
-        value: float = operation[2]
-        date: str = operation[3]
-        message_text += f'{value} {currency} | {categories[category]} | {date}\n'
+        if operation[0] == 'income':
+            categories: dict = database.load.load_categories(user_id, 'income')
+            sign: str = '+'
+
+        elif operation[0] == 'expense':
+            categories: dict = database.load.load_categories(user_id, 'expense')
+            sign: str = '-'
+
+        operation_value: float = operation[3]
+        operation_currency: str = operation[1]
+
+        # If category deleted emoji will be like 🚫.
+        try:
+            operation_category: str = categories[operation[2]]["title"]
+            category_emoji: str = emoji.emojize(categories[operation[2]]["emoji"])
+        except:
+            operation_category: str = operation[2]
+            category_emoji: str = '🚫'
+
+        operation_date: str = operation[4]
+
+        message_text += f'{sign}{operation_value} {operation_currency} | {operation_category} {category_emoji} | {operation_date}\n'
 
     return message_text
 
 
 last_operations_lines: dict = {
-    'def_text_last_operations': last_operations,
+    'd-t-last-operations': last_operations,
 
-    'error_text_last_operations_empty': 'Список последних операций пуст.',
+    'e-t-last-operations-empty': 'Список последних операций пуст.'
 }
 
-
-def category(category: str = None) -> str:
-    return f'Выбрана категория: {categories[category]}'
-
-
-def value(user_id: int, value: str = None) -> str:
-    return f'Сумма операции: {float(value)} {database.select_user_currency(user_id=user_id)}'
+def category_deleted(category_name: str, category_emoji: str) -> str:
+    return f'Категория "{category_name} {emoji.emojize(category_emoji)}" успешно удалена.'
 
 
-def def_text_operation_complete(user_id: int) -> str:
-    currency: str = database.select_user_currency(user_id=user_id)
-    return f'📌 Операция успешно добавлена.\n' \
-           f'Категория: {categories[bot_storage[user_id]["category"]]}\n' \
-           f'Сумма: {bot_storage[user_id]["value"]} {bot_storage[user_id]["currency"]}\n' \
-           f'Дата создания: {bot_storage[user_id]["date"]}\n\n'
+edit_categories_lines: dict = {
+    'd-t-category-deleted': category_deleted,
+    'e-t-categories-empty': 'Список категорий пуст.',
+    'e-t-incorrect-category': 'Ошибка при создании категории. Неверный формат. Повторите попытку.',
 
+    't-choose-categories-type': 'Выберите тип категорий для редактирования.',
+    't-choose-edit-mode': 'Выберите соответсвующую функцию.',
+    't-categories-for-add': 'Отправьте категорию / категории в формате:\n\n'
+                            'Название категории emoji\n'
+                            'Название категории emoji\n\n'
+                            'Между названием категории и emoji должен быть пробел!',
+    't-categories-for-delete': 'Нажмите на соответсвующую категорию для её удаления.',
+    't-category-added': 'Список категорий успешно обновлён.',
 
-new_operation_lines: dict = {
-    'def_text_category_chosen': category,
-    'def_text_operation_complete': def_text_operation_complete,
-    'def_text_value_inputted': value,
-
-    'error_text_incorrect_value': 'Неверное значение суммы операции. Повторите попытку.',
-
-    'text_choose_category': 'Пожалуйста, укажите категорию для операции.',
-    'text_input_value': 'Пожалуйста, укажите сумму операции.',
 }
 
-
-def current_date_formation() -> str:
-    date: list = str(datetime.date.today()).split('-')
-    date: str = f'{date[2]}.{date[1]}.{date[0]}'
-
-    return date
-
-
-def output_statistic(username: str, user_id: int) -> str:
-    operations_list: list = database.select_operations(user_id=user_id)
-    current_date: str = current_date_formation()
-
-    try:
-        first_date: str = operations_list[0][3]
-    except:
-        reporting_period: str = 'Отсутствует.'
-    else:
-        reporting_period: str = f'{first_date} - {current_date}'
-    finally:
-        categories_values: dict = {
-            'products': {
-                'title': 'Продукты',
-                'value': 0
-            },
-            'cafes': {
-                'title': 'Кафе',
-                'value': 0
-            },
-            'auto': {
-                'title': 'Автомобиль',
-                'value': 0
-            },
-            'transport': {
-                'title': 'Транспорт',
-                'value': 0
-            },
-            'home': {
-                'title': 'Дом',
-                'value': 0
-            },
-            'entertainment': {
-                'title': 'Развлечения',
-                'value': 0
-            },
-            'sport': {
-                'title': 'Спорт',
-                'value': 0
-            },
-            'health': {
-                'title': 'Здоровье',
-                'value': 0
-            },
-            'education': {
-                'title': 'Образование',
-                'value': 0
-            },
-            'gifts': {
-                'title': 'Подарки',
-                'value': 0
-            },
-            'beauty': {
-                'title': 'Красота',
-                'value': 0
-            },
-            'clothes': {
-                'title': 'Одежда',
-                'value': 0
-            },
-            'technic': {
-                'title': 'Техника',
-                'value': 0
-            },
-            'subscriptions': {
-                'title': 'Подписки',
-                'value': 0
-            }
-        }
-        total_sum: float = 0
-        currency: str = database.select_user_currency(user_id)
-
-        # Summ all values in categories.
-        for operation in operations_list:
-            categories_values[operation[1]]['value'] += operation[2]
-            total_sum += operation[2]
-
-        message_text = f'Пользователь: @{username}\n' \
-                       f'Ваши расходы по категориям.\n' \
-                       f'📅 Период: {reporting_period}\n\n' \
-                       f'{categories_values["products"]["title"]}: {categories_values["products"]["value"]} {currency}\n' \
-                       f'{categories_values["cafes"]["title"]}: {categories_values["cafes"]["value"]} {currency}\n' \
-                       f'{categories_values["auto"]["title"]}: {categories_values["auto"]["value"]} {currency}\n' \
-                       f'{categories_values["transport"]["title"]}: {categories_values["transport"]["value"]} {currency}\n' \
-                       f'{categories_values["home"]["title"]}: {categories_values["home"]["value"]} {currency}\n' \
-                       f'{categories_values["entertainment"]["title"]}: {categories_values["entertainment"]["value"]} {currency}\n' \
-                       f'{categories_values["sport"]["title"]}: {categories_values["sport"]["value"]} {currency}\n' \
-                       f'{categories_values["health"]["title"]}: {categories_values["health"]["value"]} {currency}\n' \
-                       f'{categories_values["education"]["title"]}: {categories_values["education"]["value"]} {currency}\n' \
-                       f'{categories_values["gifts"]["title"]}: {categories_values["gifts"]["value"]} {currency}\n' \
-                       f'{categories_values["beauty"]["title"]}: {categories_values["beauty"]["value"]} {currency}\n' \
-                       f'{categories_values["clothes"]["title"]}: {categories_values["clothes"]["value"]} {currency}\n' \
-                       f'{categories_values["technic"]["title"]}: {categories_values["technic"]["value"]} {currency}\n' \
-                       f'{categories_values["subscriptions"]["title"]}: {categories_values["subscriptions"]["value"]} {currency}\n\n' \
-                       f'Всего потрачено: {total_sum} {currency}'
-
-        return message_text
-
-
-profile_lines: dict = {
-    'def_text_statistic': output_statistic
-}
-
-settings_lines: dict = {
-    'error_text_operations_list_empty': 'Очистка не требуется.\nСписок операций пуст.',
-    'text_settings': 'Перехожу в настройки.',
-    'text_all_operations_deleted': 'Список операций очищен.'
-}
 
 other_lines: dict = {
-    'text_back_menu': 'Возвращаюсь в главное меню.',
+    't-back-to-main-menu': 'Возвращаюсь в главное меню.',
+    't-back-to-profile': 'Возвращаюсь в профиль.',
+    't-open-settings': 'Открываю настройки.',
+    't-back-to-settings': 'Возвращаюсь в настройки.',
 }

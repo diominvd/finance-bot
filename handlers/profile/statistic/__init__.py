@@ -1,5 +1,5 @@
 from config import dispatcher
-from handlers.settings import command_handler
+from handlers.profile.statistic import command_handler
 
 
 dispatcher.include_routers(
