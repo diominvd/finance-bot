@@ -216,7 +216,7 @@ def load_statistic(income: dict, expense: dict, currency: str, first_date: str) 
     for key, value in expense.items():
         message_text += f'∟ {value["title"]} {emoji.emojize(value["emoji"])}: {value["value"]} {currency}\n'
         total_expense += value["value"]
-    message_text += f'<b>Всего потрачено</b>: {total_income} {currency}\n'
+    message_text += f'<b>Всего потрачено</b>: {total_expense} {currency}\n'
 
     if first_date == 'Период не определён':
         message_text += f'\nПериод: <b>{first_date}</b>\n' \
