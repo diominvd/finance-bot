@@ -5,6 +5,7 @@ from aiogram.types import Message
 
 import config
 import database.check
+import database
 import lines
 import storage
 from keyboards import MenuKeyboard, CurrenciesKeyboard

@@ -6,6 +6,12 @@ import os
 connection = connector.connect(host=os.environ['HOST'], user=os.environ['USER'], password=os.environ['PASSWORD'], db=os.environ['DB'])
 cursor = connection.cursor(buffered=True)
 
+def db_connect(func):
+    def wrapper(*args, **kwargs):
+        connection.ping(reconnect=True)
+        return func(*args, **kwargs)
+    return wrapper
+
 
 cursor.execute('''CREATE TABLE IF NOT EXISTS users
 (

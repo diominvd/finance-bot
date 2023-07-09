@@ -2,9 +2,11 @@ import json
 
 import database.load
 from database import connection, cursor
+import database
 import storage
 
 
+@database.db_connect
 def create_user(user_id: int) -> None:
     user_id: int = storage.bot_storage[user_id]['user_id']
     username: str = storage.bot_storage[user_id]['username']
@@ -18,6 +20,7 @@ def create_user(user_id: int) -> None:
     connection.commit()
 
 
+@database.db_connect
 def add_operation(user_id: int) -> None:
     # Fetch operation data from bot storage.
     user_id: int = storage.bot_storage[user_id]['user_id']
@@ -52,6 +55,7 @@ def add_operation(user_id: int) -> None:
     connection.commit()
 
 
+@database.db_connect
 def delete_last_operation(user_id: int) -> None:
     # Fetch last operation data.
     cursor.execute('SELECT operation_type, category, value FROM operations WHERE user_id = %s ORDER BY operation_id DESC LIMIT 1', (user_id, ))
@@ -101,6 +105,7 @@ def delete_last_operation(user_id: int) -> None:
         connection.commit()
 
 
+@database.db_connect
 def update_categories(user_id: int, category_type: str, categories: dict) -> None:
     match category_type:
         case 'income':
